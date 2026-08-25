@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#080b12">
 <title>Istiak's Study Tracking</title>
-<!-- Google Identity Services Library -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
@@ -169,12 +167,10 @@ body.light .sidebar{
   display:flex;
   gap:10px;
   align-items:center;
-  justify-content: center;
   padding:11px;
   border:1px solid var(--border);
   border-radius:15px;
   background:var(--card);
-  min-height: 60px;
 }
 
 .avatar{
@@ -186,17 +182,9 @@ body.light .sidebar{
   color:#fff;
   font-weight:800;
   background:linear-gradient(135deg,#ff6b8b,#8b68ff);
-  object-fit: cover;
 }
 
-.profile strong{
-  font-size:11px;
-  display:block; 
-  text-overflow: ellipsis; 
-  white-space: nowrap; 
-  overflow: hidden;
-  max-width: 100px;
-}
+.profile strong{font-size:11px}
 .profile small{
   display:block;
   color:var(--green);
@@ -874,9 +862,11 @@ body.light .hero{
   opacity:1;
 }
 
+
 /* =========================================
    FULLSCREEN POMODORO
 ========================================= */
+
 .pomodoro-fullscreen{
   position:fixed;
   inset:0;
@@ -983,936 +973,2527 @@ body.light .hero{
   background:rgba(255,255,255,.08);
 }
 
+
 /* =========================================
    RESPONSIVE
 ========================================= */
+
 @media(max-width:1100px){
+
   :root{
     --sidebar:75px;
   }
+
   .sidebar{
     padding:18px 10px;
   }
+
   .brand{
     justify-content:center;
     padding:8px 0 25px;
   }
+
   .brand-text,
   .nav-title,
   .nav button span:not(.nav-icon),
   .profile-text{
     display:none;
   }
+
   .nav button{
     justify-content:center;
   }
+
   .profile{
     left:10px;
     right:10px;
     justify-content:center;
   }
+
   main{
     padding:22px;
   }
+
   .content{
     grid-template-columns:1fr;
   }
 }
 
+
 @media(max-width:780px){
+
   :root{
     --sidebar:0px;
   }
+
   .sidebar{
     width:245px;
     transform:translateX(-100%);
   }
+
   .sidebar.open{
     transform:translateX(0);
   }
+
   .brand{
     justify-content:flex-start;
   }
+
   .brand-text,
   .nav-title,
   .nav button span:not(.nav-icon),
   .profile-text{
     display:block;
   }
+
   .nav button{
     justify-content:flex-start;
   }
+
   .profile{
     justify-content:flex-start;
   }
+
   main{
     margin-left:0;
     padding:17px 13px 30px;
   }
+
   .mobile-btn{
     display:block;
   }
+
   .stats{
     grid-template-columns:1fr 1fr;
     gap:9px;
   }
+
   .hero{
     padding:23px;
   }
+
   .hero h3{
     font-size:27px;
   }
+
   .orb{
     right:-55px;
     opacity:.12;
   }
 }
 
+
 @media(max-width:540px){
+
   .topbar h2{
     font-size:22px;
   }
+
   .task-form{
     flex-direction:column;
   }
+
   .task-add{
     width:100%;
   }
+
   .subject{
     grid-template-columns:72px 1fr 34px;
     gap:7px;
   }
+
   .goal-edit .primary{
     padding-left:11px;
     padding-right:11px;
   }
+
   .timer{
     font-size:65px;
   }
+
   .brand h1{
     font-size:15px;
   }
 }
+
 </style>
 </head>
+
+
 <body>
 
 <div class="app">
 
+
 <!-- =========================================
      SIDEBAR
 ========================================= -->
+
 <aside class="sidebar" id="sidebar">
+
   <div class="brand">
+
     <div class="logo">I</div>
+
     <div class="brand-text">
+
       <h1>Istiak's Study Tracking</h1>
+
       <p>Your study, organized.</p>
+
     </div>
+
   </div>
+
 
   <div class="nav-title">MENU</div>
 
+
   <nav class="nav">
+
     <button class="active">
+
       <span class="nav-icon">⌂</span>
+
       <span>Dashboard</span>
+
     </button>
+
+
     <button onclick="scrollToSection('tasksCard')">
+
       <span class="nav-icon">✓</span>
+
       <span>Tasks</span>
+
     </button>
+
+
     <button onclick="scrollToSection('progressCard')">
+
       <span class="nav-icon">◔</span>
+
       <span>Progress</span>
+
     </button>
+
+
     <button onclick="scrollToSection('chartCard')">
+
       <span class="nav-icon">▦</span>
+
       <span>Analytics</span>
+
     </button>
+
+
     <button onclick="focusGoal()">
+
       <span class="nav-icon">⚙</span>
+
       <span>Goal</span>
+
     </button>
+
   </nav>
 
-  <!-- Google Auth Integration Starts Here -->
-  <div class="profile" id="profileContainer">
-    
-    <!-- Google Login Configuration Box -->
-    <div id="g_id_onload"
-         data-client_id="YOUR_GOOGLE_CLIENT_ID_HERE"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
+
+  <div class="profile">
+
+    <div class="avatar">I</div>
+
+    <div class="profile-text">
+
+      <strong>Istiak</strong>
+
+      <small>● Online</small>
+
     </div>
 
-    <!-- The Google Sign-in Button Element -->
-    <div class="g_id_signin"
-         data-type="standard"
-         data-shape="pill"
-         data-theme="outline"
-         data-text="signin"
-         data-size="medium"
-         data-logo_alignment="left"
-         id="googleSignInBtn">
-    </div>
-
-    <!-- User Profile (Hidden by default until logged in) -->
-    <div id="userProfile" style="display:none; align-items:center; gap:10px; width: 100%;">
-      <img id="userAvatar" src="" alt="Avatar" class="avatar">
-      <div class="profile-text" style="flex: 1; overflow: hidden;">
-        <strong id="userName">User</strong>
-        <small>● Online</small>
-      </div>
-      <button onclick="signOut()" style="background:transparent; color:var(--muted); font-size: 16px; border-radius: 4px; padding: 4px;" title="Sign Out">🚪</button>
-    </div>
-    
   </div>
-  <!-- Google Auth Integration Ends Here -->
 
 </aside>
+
 
 
 <!-- =========================================
      MAIN
 ========================================= -->
+
 <main>
 
+
 <!-- TOPBAR -->
+
 <div class="topbar">
+
   <div>
+
     <h2>আজকের Dashboard</h2>
-    <p id="dateText">আজকের পড়াশোনা শুরু করুন।</p>
+
+    <p id="dateText">
+      আজকের পড়াশোনা শুরু করুন।
+    </p>
+
   </div>
 
+
   <div class="actions">
-    <button class="icon-btn mobile-btn" id="menuBtn">☰</button>
-    <button class="icon-btn" id="themeBtn">☀</button>
-    <button class="icon-btn" id="notifyBtn">♢</button>
+
+    <button
+      class="icon-btn mobile-btn"
+      id="menuBtn"
+    >
+      ☰
+    </button>
+
+
+    <button
+      class="icon-btn"
+      id="themeBtn"
+    >
+      ☀
+    </button>
+
+
+    <button
+      class="icon-btn"
+      id="notifyBtn"
+    >
+      ♢
+    </button>
+
   </div>
+
 </div>
+
+
 
 <!-- =========================================
      HERO
 ========================================= -->
+
 <section class="hero">
+
   <div class="hero-content">
-    <div class="badge">✦ STUDY MODE</div>
-    <h3>আজকের লক্ষ্যটা <span class="gradient">শেষ করি।</span></h3>
-    <p>ছোট ছোট progress-ই শেষ পর্যন্ত বড় result তৈরি করে। Focus করুন, Pomodoro চালু করুন এবং নিজের progress track করুন।</p>
-    <div class="hero-actions">
-      <button class="primary" onclick="startPomodoro()">▶ Start Pomodoro</button>
-      <button class="secondary" onclick="focusGoal()">🎯 Set Goal</button>
+
+    <div class="badge">
+      ✦ STUDY MODE
     </div>
+
+
+    <h3>
+
+      আজকের লক্ষ্যটা
+
+      <span class="gradient">
+        শেষ করি।
+      </span>
+
+    </h3>
+
+
+    <p>
+
+      ছোট ছোট progress-ই শেষ পর্যন্ত বড় result তৈরি করে।
+      Focus করুন, Pomodoro চালু করুন এবং নিজের progress track করুন।
+
+    </p>
+
+
+    <div class="hero-actions">
+
+      <button
+        class="primary"
+        onclick="startPomodoro()"
+      >
+        ▶ Start Pomodoro
+      </button>
+
+
+      <button
+        class="secondary"
+        onclick="focusGoal()"
+      >
+        🎯 Set Goal
+      </button>
+
+    </div>
+
   </div>
+
+
   <div class="orb"></div>
+
 </section>
+
+
 
 <!-- =========================================
      STATS
 ========================================= -->
+
 <section class="stats">
-  <div class="stat">
-    <div class="stat-top">
-      <span class="stat-label">আজকের Progress</span>
-      <span class="stat-icon">◔</span>
-    </div>
-    <div class="stat-value" id="statProgress">0%</div>
-    <div class="stat-sub">Daily goal completion</div>
-  </div>
+
 
   <div class="stat">
+
     <div class="stat-top">
-      <span class="stat-label">Study Time</span>
-      <span class="stat-icon">◷</span>
+
+      <span class="stat-label">
+        আজকের Progress
+      </span>
+
+      <span class="stat-icon">
+        ◔
+      </span>
+
     </div>
-    <div class="stat-value" id="statMinutes">0m</div>
-    <div class="stat-sub">আজকের পড়াশোনা</div>
+
+
+    <div
+      class="stat-value"
+      id="statProgress"
+    >
+      0%
+    </div>
+
+
+    <div class="stat-sub">
+      Daily goal completion
+    </div>
+
   </div>
 
-  <div class="stat">
-    <div class="stat-top">
-      <span class="stat-label">Completed</span>
-      <span class="stat-icon">✓</span>
-    </div>
-    <div class="stat-value" id="statCompleted">0</div>
-    <div class="stat-sub">Finished tasks</div>
-  </div>
+
 
   <div class="stat">
+
     <div class="stat-top">
-      <span class="stat-label">Streak</span>
-      <span class="stat-icon">🔥</span>
+
+      <span class="stat-label">
+        Study Time
+      </span>
+
+      <span class="stat-icon">
+        ◷
+      </span>
+
     </div>
-    <div class="stat-value" id="statStreak">0d</div>
-    <div class="stat-sub">Keep going!</div>
+
+
+    <div
+      class="stat-value"
+      id="statMinutes"
+    >
+      0m
+    </div>
+
+
+    <div class="stat-sub">
+      আজকের পড়াশোনা
+    </div>
+
   </div>
+
+
+
+  <div class="stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Completed
+      </span>
+
+      <span class="stat-icon">
+        ✓
+      </span>
+
+    </div>
+
+
+    <div
+      class="stat-value"
+      id="statCompleted"
+    >
+      0
+    </div>
+
+
+    <div class="stat-sub">
+      Finished tasks
+    </div>
+
+  </div>
+
+
+
+  <div class="stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Streak
+      </span>
+
+      <span class="stat-icon">
+        🔥
+      </span>
+
+    </div>
+
+
+    <div
+      class="stat-value"
+      id="statStreak"
+    >
+      0d
+    </div>
+
+
+    <div class="stat-sub">
+      Keep going!
+    </div>
+
+  </div>
+
 </section>
+
+
 
 <!-- =========================================
      CONTENT
 ========================================= -->
+
 <section class="content">
+
 
 <!-- =========================================
      LEFT COLUMN
 ========================================= -->
+
 <div class="stack">
 
+
 <!-- TASKS -->
-<div class="card" id="tasksCard">
+
+<div
+  class="card"
+  id="tasksCard"
+>
+
   <div class="header">
+
     <div>
-      <div class="title">আজ কী পড়বেন?</div>
-      <div class="subtitle">আপনার tasks এখানে manage করুন</div>
+
+      <div class="title">
+        আজ কী পড়বেন?
+      </div>
+
+      <div class="subtitle">
+        আপনার tasks এখানে manage করুন
+      </div>
+
     </div>
-    <button class="link-btn" onclick="clearTasks()">Reset</button>
+
+
+    <button
+      class="link-btn"
+      onclick="clearTasks()"
+    >
+      Reset
+    </button>
+
   </div>
 
-  <form class="task-form" id="taskForm">
-    <input id="taskInput" class="input" placeholder="যেমন: গণিত — Trigonometry practice" required>
-    <select class="select" id="subjectSelect">
+
+  <form
+    class="task-form"
+    id="taskForm"
+  >
+
+    <input
+      id="taskInput"
+      class="input"
+      placeholder="যেমন: গণিত — Trigonometry practice"
+      required
+    >
+
+
+    <select
+      class="select"
+      id="subjectSelect"
+    >
+
       <option>গণিত</option>
+
       <option>পদার্থবিজ্ঞান</option>
+
       <option>রসায়ন</option>
+
       <option>ইংরেজি</option>
+
       <option>অন্যান্য</option>
+
     </select>
-    <button class="primary task-add">+ যোগ</button>
+
+
+    <button
+      class="primary task-add"
+    >
+      + যোগ
+    </button>
+
   </form>
 
-  <div class="tasks" id="taskList"></div>
+
+  <div
+    class="tasks"
+    id="taskList"
+  ></div>
+
 </div>
+
+
 
 <!-- POMODORO -->
+
 <div class="card">
+
   <div class="header">
+
     <div>
-      <div class="title">🍅 Pomodoro</div>
-      <div class="subtitle">50 মিনিট Focus • 10 মিনিট Break</div>
+
+      <div class="title">
+        🍅 Pomodoro
+      </div>
+
+      <div class="subtitle">
+        50 মিনিট Focus • 10 মিনিট Break
+      </div>
+
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div class="pomo-session">Session <span id="sessionCount">0</span></div>
-      <button class="secondary" type="button" onclick="openPomodoroFullscreen()">⛶ Full Screen</button>
+
+
+    <div
+      style="display:flex;align-items:center;gap:8px;"
+    >
+
+      <div class="pomo-session">
+
+        Session
+        <span id="sessionCount">0</span>
+
+      </div>
+
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="openPomodoroFullscreen()"
+      >
+        ⛶ Full Screen
+      </button>
+
     </div>
+
   </div>
+
 
   <div class="pomodoro">
-    <div class="mode" id="pomoMode">FOCUS TIME</div>
-    <div class="timer" id="timer">50:00</div>
-    <div class="pomo-status" id="pomoStatus">Stay focused. One session at a time.</div>
-    <div class="pomo-actions">
-      <button class="primary" id="startBtn">▶ Start</button>
-      <button class="secondary" id="resetBtn">↻ Reset</button>
+
+    <div
+      class="mode"
+      id="pomoMode"
+    >
+      FOCUS TIME
     </div>
+
+
+    <div
+      class="timer"
+      id="timer"
+    >
+      50:00
+    </div>
+
+
+    <div
+      class="pomo-status"
+      id="pomoStatus"
+    >
+      Stay focused. One session at a time.
+    </div>
+
+
+    <div class="pomo-actions">
+
+      <button
+        class="primary"
+        id="startBtn"
+      >
+        ▶ Start
+      </button>
+
+
+      <button
+        class="secondary"
+        id="resetBtn"
+      >
+        ↻ Reset
+      </button>
+
+    </div>
+
   </div>
+
 </div>
+
+
 
 <!-- SUBJECT PROGRESS -->
-<div class="card" id="progressCard">
+
+<div
+  class="card"
+  id="progressCard"
+>
+
   <div class="header">
+
     <div>
-      <div class="title">বিষয়ভিত্তিক অগ্রগতি</div>
-      <div class="subtitle">Preparation কতদূর?</div>
+
+      <div class="title">
+        বিষয়ভিত্তিক অগ্রগতি
+      </div>
+
+      <div class="subtitle">
+        Preparation কতদূর?
+      </div>
+
     </div>
+
   </div>
+
 
   <div class="subjects">
+
+
     <div class="subject">
-      <div class="subject-name">গণিত</div>
-      <div class="bar-bg"><div class="bar" data-value="78"></div></div>
-      <div class="percent">78%</div>
+
+      <div class="subject-name">
+        গণিত
+      </div>
+
+      <div class="bar-bg">
+
+        <div
+          class="bar"
+          data-value="78"
+        ></div>
+
+      </div>
+
+      <div class="percent">
+        78%
+      </div>
+
     </div>
+
+
     <div class="subject">
-      <div class="subject-name">পদার্থ</div>
-      <div class="bar-bg"><div class="bar" data-value="63"></div></div>
-      <div class="percent">63%</div>
+
+      <div class="subject-name">
+        পদার্থ
+      </div>
+
+      <div class="bar-bg">
+
+        <div
+          class="bar"
+          data-value="63"
+        ></div>
+
+      </div>
+
+      <div class="percent">
+        63%
+      </div>
+
     </div>
+
+
     <div class="subject">
-      <div class="subject-name">রসায়ন</div>
-      <div class="bar-bg"><div class="bar" data-value="84"></div></div>
-      <div class="percent">84%</div>
+
+      <div class="subject-name">
+        রসায়ন
+      </div>
+
+      <div class="bar-bg">
+
+        <div
+          class="bar"
+          data-value="84"
+        ></div>
+
+      </div>
+
+      <div class="percent">
+        84%
+      </div>
+
     </div>
+
+
     <div class="subject">
-      <div class="subject-name">ইংরেজি</div>
-      <div class="bar-bg"><div class="bar" data-value="51"></div></div>
-      <div class="percent">51%</div>
+
+      <div class="subject-name">
+        ইংরেজি
+      </div>
+
+      <div class="bar-bg">
+
+        <div
+          class="bar"
+          data-value="51"
+        ></div>
+
+      </div>
+
+      <div class="percent">
+        51%
+      </div>
+
     </div>
+
   </div>
+
 </div>
+
+
 
 <!-- CHART -->
-<div class="card" id="chartCard">
+
+<div
+  class="card"
+  id="chartCard"
+>
+
   <div class="header">
+
     <div>
-      <div class="title">শেষ ৭ দিনের পড়াশোনা</div>
-      <div class="subtitle">Daily study time</div>
+
+      <div class="title">
+        শেষ ৭ দিনের পড়াশোনা
+      </div>
+
+      <div class="subtitle">
+        Daily study time
+      </div>
+
     </div>
-    <button class="link-btn" onclick="toast('Weekly report coming soon')">Report</button>
+
+
+    <button
+      class="link-btn"
+      onclick="toast('Weekly report coming soon')"
+    >
+      Report
+    </button>
+
   </div>
-  <div class="chart" id="chart"></div>
-</div>
+
+
+  <div
+    class="chart"
+    id="chart"
+  ></div>
 
 </div>
+
+
+</div>
+
+
 
 <!-- =========================================
      RIGHT COLUMN
 ========================================= -->
+
 <div class="stack">
 
+
 <!-- GOAL -->
+
 <div class="card goal">
+
   <div class="header">
+
     <div>
-      <div class="title">🎯 আজকের লক্ষ্য</div>
-      <div class="subtitle">কত মিনিট পড়তে চান?</div>
+
+      <div class="title">
+        🎯 আজকের লক্ষ্য
+      </div>
+
+      <div class="subtitle">
+        কত মিনিট পড়তে চান?
+      </div>
+
     </div>
+
   </div>
 
-  <div class="goal-circle" id="goalCircle" style="--angle:0deg">
+
+  <div
+    class="goal-circle"
+    id="goalCircle"
+    style="--angle:0deg"
+  >
+
     <div>
-      <div class="goal-percent" id="goalPercent">0%</div>
-      <div class="goal-small">of daily goal</div>
+
+      <div
+        class="goal-percent"
+        id="goalPercent"
+      >
+        0%
+      </div>
+
+      <div class="goal-small">
+        of daily goal
+      </div>
+
     </div>
+
   </div>
+
 
   <div class="goal-edit">
-    <input class="input" type="number" min="10" max="1440" id="goalInput" value="300">
-    <button class="primary" onclick="saveGoal()">Save</button>
+
+    <input
+      class="input"
+      type="number"
+      min="10"
+      max="1440"
+      id="goalInput"
+      value="300"
+    >
+
+
+    <button
+      class="primary"
+      onclick="saveGoal()"
+    >
+      Save
+    </button>
+
   </div>
+
 </div>
+
+
 
 <!-- STREAK -->
+
 <div class="card">
+
   <div class="streak-box">
+
     <div class="streak-top">
+
       <div>
-        <div class="streak-number" id="streakNumber">0</div>
-        <div class="streak-label">days study streak</div>
+
+        <div
+          class="streak-number"
+          id="streakNumber"
+        >
+          0
+        </div>
+
+        <div class="streak-label">
+          days study streak
+        </div>
+
       </div>
-      <div class="fire">🔥</div>
+
+
+      <div class="fire">
+        🔥
+      </div>
+
     </div>
+
+
     <div class="days">
+
       <div class="day">Sat</div>
+
       <div class="day">Sun</div>
+
       <div class="day active">Mon</div>
+
       <div class="day active">Tue</div>
+
       <div class="day">Wed</div>
+
       <div class="day">Thu</div>
+
       <div class="day">Fri</div>
+
     </div>
+
   </div>
+
 </div>
+
+
 
 <!-- NOTE -->
+
 <div class="card">
+
   <div class="header">
+
     <div>
-      <div class="title">📝 Quick Note</div>
-      <div class="subtitle">Important কিছু লিখে রাখুন</div>
+
+      <div class="title">
+        📝 Quick Note
+      </div>
+
+      <div class="subtitle">
+        Important কিছু লিখে রাখুন
+      </div>
+
     </div>
+
   </div>
-  <textarea class="input note" id="note" rows="6" placeholder="আজকে কী improve করতে হবে..."></textarea>
+
+
+  <textarea
+    class="input note"
+    id="note"
+    rows="6"
+    placeholder="আজকে কী improve করতে হবে..."
+  ></textarea>
+
 </div>
 
+
+
 <!-- REMINDER -->
+
 <div class="card">
+
   <div class="reminder">
-    <div class="reminder-title">⏰ REMINDER</div>
-    <strong>আজকের target শেষ না হওয়া পর্যন্ত থামবেন না।</strong>
-    <p>Consistency beats motivation.</p>
+
+    <div class="reminder-title">
+      ⏰ REMINDER
+    </div>
+
+
+    <strong>
+      আজকের target শেষ না হওয়া পর্যন্ত থামবেন না।
+    </strong>
+
+
+    <p>
+      Consistency beats motivation.
+    </p>
+
   </div>
+
 </div>
+
 
 </div>
 
 </section>
+
 </main>
+
 </div>
+
+
 
 <!-- =========================================
      FULLSCREEN POMODORO
 ========================================= -->
-<div class="pomodoro-fullscreen" id="pomodoroFullscreen" aria-hidden="true">
-  <button class="fullscreen-exit" type="button" onclick="closePomodoroFullscreen()">✕ Exit</button>
+
+<div
+  class="pomodoro-fullscreen"
+  id="pomodoroFullscreen"
+  aria-hidden="true"
+>
+
+  <button
+    class="fullscreen-exit"
+    type="button"
+    onclick="closePomodoroFullscreen()"
+  >
+    ✕ Exit
+  </button>
+
+
   <div class="fullscreen-content">
-    <div class="fullscreen-label">🍅 ISTIAK'S STUDY TRACKING</div>
-    <div class="fullscreen-mode" id="fullscreenMode">FOCUS TIME</div>
-    <div class="fullscreen-timer" id="fullscreenTimer">50:00</div>
-    <div class="fullscreen-status" id="fullscreenStatus">50 মিনিট শুধু পড়াশোনায় focus করুন.</div>
-    <div class="fullscreen-session">Session <span id="fullscreenSession">0</span></div>
-    <div class="fullscreen-actions">
-      <button class="primary fullscreen-start" type="button" onclick="startPomodoro()">▶ Start</button>
-      <button class="secondary" type="button" onclick="resetPomodoro()">↻ Reset</button>
+
+    <div class="fullscreen-label">
+      🍅 ISTIAK'S STUDY TRACKING
     </div>
+
+
+    <div
+      class="fullscreen-mode"
+      id="fullscreenMode"
+    >
+      FOCUS TIME
+    </div>
+
+
+    <div
+      class="fullscreen-timer"
+      id="fullscreenTimer"
+    >
+      50:00
+    </div>
+
+
+    <div
+      class="fullscreen-status"
+      id="fullscreenStatus"
+    >
+      50 মিনিট শুধু পড়াশোনায় focus করুন.
+    </div>
+
+
+    <div class="fullscreen-session">
+
+      Session
+      <span id="fullscreenSession">
+        0
+      </span>
+
+    </div>
+
+
+    <div class="fullscreen-actions">
+
+      <button
+        class="primary fullscreen-start"
+        type="button"
+        onclick="startPomodoro()"
+      >
+        ▶ Start
+      </button>
+
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="resetPomodoro()"
+      >
+        ↻ Reset
+      </button>
+
+    </div>
+
   </div>
+
 </div>
 
-<div class="toast" id="toast"></div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
 
 <script>
+
 /* =========================================
    STORAGE
 ========================================= */
+
 const KEY={
+
   tasks:"studyKhata.tasks",
+
   goal:"studyKhata.goal",
+
   minutes:"studyKhata.minutes",
+
   theme:"studyKhata.theme",
+
   note:"studyKhata.note",
-  sessions:"studyKhata.sessions",
-  user: "studyKhata.user" // Added for Google Login persistence
+
+  sessions:"studyKhata.sessions"
+
 };
 
+
 function get(key,fallback){
+
   try{
+
     const x=localStorage.getItem(key);
-    return x===null ? fallback : JSON.parse(x);
+
+    return x===null
+      ? fallback
+      : JSON.parse(x);
+
   }catch{
+
     return fallback;
+
   }
+
 }
+
 
 function set(key,value){
-  localStorage.setItem(key, JSON.stringify(value));
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(value)
+  );
+
 }
 
-/* =========================================
-   GOOGLE LOGIN & AUTH
-========================================= */
-function handleCredentialResponse(response) {
-  // Decode JWT payload
-  const payload = JSON.parse(atob(response.credential.split('.')[1]));
-  
-  // Save user info locally
-  set(KEY.user, {
-    name: payload.name,
-    email: payload.email,
-    picture: payload.picture
-  });
 
-  updateProfileUI(payload);
-  toast(`Welcome, ${payload.name}! 🎉`);
-}
-
-function updateProfileUI(userData) {
-  if (userData) {
-    document.getElementById('googleSignInBtn').style.display = 'none';
-    document.getElementById('userProfile').style.display = 'flex';
-    
-    document.getElementById('userName').textContent = userData.name;
-    document.getElementById('userAvatar').src = userData.picture;
-  }
-}
-
-function signOut() {
-  localStorage.removeItem(KEY.user);
-  document.getElementById('googleSignInBtn').style.display = 'block';
-  document.getElementById('userProfile').style.display = 'none';
-  toast("Logged out successfully");
-}
-
-// Check on load if already signed in
-const savedUser = get(KEY.user, null);
-if (savedUser) {
-  updateProfileUI(savedUser);
-}
 
 /* =========================================
    STATE
 ========================================= */
+
 let tasks=get(KEY.tasks,[
-  { id:1, name:"Physics — Current Electricity revision", subject:"পদার্থবিজ্ঞান", done:false },
-  { id:2, name:"Math — Trigonometry practice", subject:"গণিত", done:true },
-  { id:3, name:"Chemistry — Chemical Change MCQ", subject:"রসায়ন", done:false }
+
+  {
+    id:1,
+    name:"Physics — Current Electricity revision",
+    subject:"পদার্থবিজ্ঞান",
+    done:false
+  },
+
+  {
+    id:2,
+    name:"Math — Trigonometry practice",
+    subject:"গণিত",
+    done:true
+  },
+
+  {
+    id:3,
+    name:"Chemistry — Chemical Change MCQ",
+    subject:"রসায়ন",
+    done:false
+  }
+
 ]);
 
-let goal=get(KEY.goal, 300);
-let studyMinutes=get(KEY.minutes, 0);
-let sessions=get(KEY.sessions, 0);
+
+let goal=get(
+  KEY.goal,
+  300
+);
+
+
+let studyMinutes=get(
+  KEY.minutes,
+  0
+);
+
+
+let sessions=get(
+  KEY.sessions,
+  0
+);
+
+
 
 /* =========================================
    HELPERS
 ========================================= */
+
 function escapeHTML(str){
+
   return String(str)
+
     .replaceAll("&","&amp;")
+
     .replaceAll("<","&lt;")
+
     .replaceAll(">","&gt;")
+
     .replaceAll('"',"&quot;")
+
     .replaceAll("'","&#039;");
+
 }
 
+
 function toast(message){
-  const t=document.getElementById("toast");
+
+  const t=
+    document.getElementById("toast");
+
+
   t.textContent=message;
+
   t.classList.add("show");
-  clearTimeout(window.toastTimer);
+
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+
   window.toastTimer=setTimeout(()=>{
+
     t.classList.remove("show");
+
   },2200);
+
 }
+
+
 
 /* =========================================
    DATE
 ========================================= */
+
 function updateDate(){
+
   const d=new Date();
-  document.getElementById("dateText").textContent =
-    d.toLocaleDateString("bn-BD", { weekday:"long", year:"numeric", month:"long", day:"numeric" })
+
+
+  document.getElementById(
+    "dateText"
+  ).textContent=
+
+    d.toLocaleDateString(
+      "bn-BD",
+      {
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      }
+    )
+
     +" • Keep moving forward 🚀";
+
 }
+
+
 updateDate();
+
+
 
 /* =========================================
    TASKS
 ========================================= */
+
 function renderTasks(){
-  const box = document.getElementById("taskList");
+
+  const box=
+    document.getElementById("taskList");
+
+
   if(!tasks.length){
-    box.innerHTML=`<div class="empty">এখনো কোনো task নেই। উপরে থেকে একটি task যোগ করুন।</div>`;
+
+    box.innerHTML=`
+
+      <div class="empty">
+
+        এখনো কোনো task নেই।
+        উপরে থেকে একটি task যোগ করুন।
+
+      </div>
+
+    `;
+
+
     updateStats();
+
     return;
+
   }
 
-  box.innerHTML=tasks.map(task=>`
-    <div class="task ${task.done?"done":""}">
-      <label class="check">
-        <input type="checkbox" ${task.done?"checked":""} onchange="toggleTask(${task.id})">
-        <span></span>
-      </label>
-      <div class="task-info">
-        <div class="task-name">${escapeHTML(task.name)}</div>
-        <div class="task-meta">${escapeHTML(task.subject)} • Today</div>
+
+  box.innerHTML=
+
+    tasks.map(task=>`
+
+      <div
+        class="task ${task.done?"done":""}"
+      >
+
+        <label class="check">
+
+          <input
+            type="checkbox"
+            ${task.done?"checked":""}
+            onchange="toggleTask(${task.id})"
+          >
+
+          <span></span>
+
+        </label>
+
+
+        <div class="task-info">
+
+          <div class="task-name">
+
+            ${escapeHTML(task.name)}
+
+          </div>
+
+
+          <div class="task-meta">
+
+            ${escapeHTML(task.subject)}
+            • Today
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="delete"
+          onclick="deleteTask(${task.id})"
+        >
+          ×
+        </button>
+
       </div>
-      <button class="delete" onclick="deleteTask(${task.id})">×</button>
-    </div>
-  `).join("");
-  
+
+    `).join("");
+
+
   updateStats();
+
 }
+
+
 
 function toggleTask(id){
-  tasks=tasks.map(t=>t.id===id ? {...t,done:!t.done} : t);
-  set(KEY.tasks, tasks);
+
+  tasks=tasks.map(t=>
+
+    t.id===id
+
+      ? {...t,done:!t.done}
+
+      : t
+
+  );
+
+
+  set(
+    KEY.tasks,
+    tasks
+  );
+
+
   renderTasks();
-  if(tasks.find(t=>t.id===id)?.done) {
-    toast("Task completed 🎉");
+
+
+  if(
+    tasks.find(t=>t.id===id)?.done
+  ){
+
+    toast(
+      "Task completed 🎉"
+    );
+
   }
+
 }
+
+
 
 function deleteTask(id){
-  tasks=tasks.filter(t=>t.id!==id);
-  set(KEY.tasks, tasks);
+
+  tasks=tasks.filter(
+    t=>t.id!==id
+  );
+
+
+  set(
+    KEY.tasks,
+    tasks
+  );
+
+
   renderTasks();
-  toast("Task deleted");
+
+
+  toast(
+    "Task deleted"
+  );
+
 }
+
+
 
 function clearTasks(){
+
   tasks=[];
-  set(KEY.tasks, tasks);
+
+
+  set(
+    KEY.tasks,
+    tasks
+  );
+
+
   renderTasks();
-  toast("Task list reset হয়েছে");
+
+
+  toast(
+    "Task list reset হয়েছে"
+  );
+
 }
 
-document.getElementById("taskForm").addEventListener("submit", e=>{
-  e.preventDefault();
-  const input = document.getElementById("taskInput");
-  const subject = document.getElementById("subjectSelect");
-  const name = input.value.trim();
 
-  if(!name){
-    toast("একটা task লিখুন");
-    return;
-  }
 
-  tasks.unshift({ id:Date.now(), name, subject:subject.value, done:false });
-  set(KEY.tasks, tasks);
-  input.value="";
-  renderTasks();
-  toast("Task যোগ হয়েছে ✦");
-});
+document
+  .getElementById("taskForm")
+  .addEventListener(
+    "submit",
+    e=>{
+
+      e.preventDefault();
+
+
+      const input=
+        document.getElementById(
+          "taskInput"
+        );
+
+
+      const subject=
+        document.getElementById(
+          "subjectSelect"
+        );
+
+
+      const name=
+        input.value.trim();
+
+
+      if(!name){
+
+        toast(
+          "একটা task লিখুন"
+        );
+
+        return;
+
+      }
+
+
+      tasks.unshift({
+
+        id:Date.now(),
+
+        name,
+
+        subject:subject.value,
+
+        done:false
+
+      });
+
+
+      set(
+        KEY.tasks,
+        tasks
+      );
+
+
+      input.value="";
+
+
+      renderTasks();
+
+
+      toast(
+        "Task যোগ হয়েছে ✦"
+      );
+
+    }
+  );
+
+
 
 /* =========================================
    GOAL + STATS
 ========================================= */
+
 function updateGoal(){
-  const percent=Math.min(100, Math.round((studyMinutes/goal)*100));
-  document.getElementById("goalPercent").textContent=percent+"%";
-  document.getElementById("goalCircle").style.setProperty("--angle",(percent*3.6)+"deg");
-  document.getElementById("statProgress").textContent=percent+"%";
+
+  const percent=Math.min(
+
+    100,
+
+    Math.round(
+      (studyMinutes/goal)*100
+    )
+
+  );
+
+
+  document.getElementById(
+    "goalPercent"
+  ).textContent=
+
+    percent+"%";
+
+
+  document.getElementById(
+    "goalCircle"
+  ).style.setProperty(
+    "--angle",
+    (percent*3.6)+"deg"
+  );
+
+
+  document.getElementById(
+    "statProgress"
+  ).textContent=
+
+    percent+"%";
+
 }
+
+
 
 function updateStats(){
-  const completed=tasks.filter(t=>t.done).length;
-  document.getElementById("statMinutes").textContent=studyMinutes+"m";
-  document.getElementById("statCompleted").textContent=completed;
-  
-  const streak=Math.min(7, completed+Math.min(sessions,3));
-  document.getElementById("statStreak").textContent=streak+"d";
-  document.getElementById("streakNumber").textContent=streak;
+
+  const completed=
+
+    tasks.filter(
+      t=>t.done
+    ).length;
+
+
+  document.getElementById(
+    "statMinutes"
+  ).textContent=
+
+    studyMinutes+"m";
+
+
+  document.getElementById(
+    "statCompleted"
+  ).textContent=
+
+    completed;
+
+
+  const streak=Math.min(
+
+    7,
+
+    completed+
+    Math.min(sessions,3)
+
+  );
+
+
+  document.getElementById(
+    "statStreak"
+  ).textContent=
+
+    streak+"d";
+
+
+  document.getElementById(
+    "streakNumber"
+  ).textContent=
+
+    streak;
+
+
   updateGoal();
+
 }
+
+
 
 function saveGoal(){
-  const value=Number(document.getElementById("goalInput").value);
+
+  const value=Number(
+
+    document.getElementById(
+      "goalInput"
+    ).value
+
+  );
+
+
   if(!value || value<10){
-    toast("Minimum goal 10 minutes");
+
+    toast(
+      "Minimum goal 10 minutes"
+    );
+
     return;
+
   }
+
+
   goal=value;
-  set(KEY.goal, goal);
+
+
+  set(
+    KEY.goal,
+    goal
+  );
+
+
   updateStats();
-  toast("Daily goal saved 🎯");
+
+
+  toast(
+    "Daily goal saved 🎯"
+  );
+
 }
 
+
+
 function focusGoal(){
-  const input=document.getElementById("goalInput");
+
+  const input=
+    document.getElementById(
+      "goalInput"
+    );
+
+
   input.focus();
-  input.scrollIntoView({behavior:"smooth", block:"center"});
+
+
+  input.scrollIntoView({
+
+    behavior:"smooth",
+
+    block:"center"
+
+  });
+
 }
+
+
 
 /* =========================================
    POMODORO 50 / 10
 ========================================= */
+
 const FOCUS=50*60;
+
 const BREAK=10*60;
+
+
 let mode="focus";
+
 let seconds=FOCUS;
+
 let running=false;
+
 let interval=null;
 
+
+
 function formatTime(sec){
-  const m = Math.floor(sec/60);
-  const s = sec%60;
-  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+
+  const m=
+    Math.floor(sec/60);
+
+
+  const s=
+    sec%60;
+
+
+  return String(m)
+    .padStart(2,"0")
+
+    +
+
+    ":"
+
+    +
+
+    String(s)
+    .padStart(2,"0");
+
 }
+
+
 
 function updatePomodoro(){
-  document.getElementById("timer").textContent=formatTime(seconds);
-  document.getElementById("sessionCount").textContent=sessions;
 
-  const modeEl=document.getElementById("pomoMode");
-  const fullMode=document.getElementById("fullscreenMode");
-  const fullStatus=document.getElementById("fullscreenStatus");
+  document.getElementById(
+    "timer"
+  ).textContent=
+
+    formatTime(seconds);
+
+
+  document.getElementById(
+    "sessionCount"
+  ).textContent=
+
+    sessions;
+
+
+  const modeEl=
+    document.getElementById(
+      "pomoMode"
+    );
+
+
+  const fullMode=
+    document.getElementById(
+      "fullscreenMode"
+    );
+
+
+  const fullStatus=
+    document.getElementById(
+      "fullscreenStatus"
+    );
+
 
   if(mode==="focus"){
-    modeEl.textContent="FOCUS TIME";
-    modeEl.style.color="var(--cyan)";
-    document.getElementById("pomoStatus").textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
-    if(fullMode) { fullMode.textContent="FOCUS TIME"; fullMode.style.color="var(--cyan)"; }
-    if(fullStatus) fullStatus.textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
+
+    modeEl.textContent=
+      "FOCUS TIME";
+
+    modeEl.style.color=
+      "var(--cyan)";
+
+
+    document.getElementById(
+      "pomoStatus"
+    ).textContent=
+
+      "50 মিনিট শুধু পড়াশোনায় focus করুন.";
+
+
+    if(fullMode)
+      fullMode.textContent=
+        "FOCUS TIME";
+
+
+    if(fullMode)
+      fullMode.style.color=
+        "var(--cyan)";
+
+
+    if(fullStatus)
+      fullStatus.textContent=
+        "50 মিনিট শুধু পড়াশোনায় focus করুন.";
+
   }else{
-    modeEl.textContent="BREAK TIME";
-    modeEl.style.color="var(--green)";
-    document.getElementById("pomoStatus").textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
-    if(fullMode) { fullMode.textContent="BREAK TIME"; fullMode.style.color="var(--green)"; }
-    if(fullStatus) fullStatus.textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
+
+    modeEl.textContent=
+      "BREAK TIME";
+
+
+    modeEl.style.color=
+      "var(--green)";
+
+
+    document.getElementById(
+      "pomoStatus"
+    ).textContent=
+
+      "10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
+
+
+    if(fullMode)
+      fullMode.textContent=
+        "BREAK TIME";
+
+
+    if(fullMode)
+      fullMode.style.color=
+        "var(--green)";
+
+
+    if(fullStatus)
+      fullStatus.textContent=
+        "10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
+
   }
 
-  document.getElementById("startBtn").textContent = running ? "Ⅱ Pause" : "▶ Start";
-  
-  const fullTimer = document.getElementById("fullscreenTimer");
-  const fullSession = document.getElementById("fullscreenSession");
-  const fullStart = document.querySelector(".fullscreen-start");
 
-  if(fullTimer) fullTimer.textContent=formatTime(seconds);
-  if(fullSession) fullSession.textContent=sessions;
-  if(fullStart) fullStart.textContent = running ? "Ⅱ Pause" : "▶ Start";
+  document.getElementById(
+    "startBtn"
+  ).textContent=
+
+    running
+      ? "Ⅱ Pause"
+      : "▶ Start";
+
+
+  const fullTimer=
+    document.getElementById(
+      "fullscreenTimer"
+    );
+
+
+  const fullSession=
+    document.getElementById(
+      "fullscreenSession"
+    );
+
+
+  const fullStart=
+    document.querySelector(
+      ".fullscreen-start"
+    );
+
+
+  if(fullTimer)
+
+    fullTimer.textContent=
+      formatTime(seconds);
+
+
+  if(fullSession)
+
+    fullSession.textContent=
+      sessions;
+
+
+  if(fullStart)
+
+    fullStart.textContent=
+
+      running
+        ? "Ⅱ Pause"
+        : "▶ Start";
+
 }
+
+
 
 function startPomodoro(){
+
   if(running){
+
     clearInterval(interval);
+
     running=false;
+
     updatePomodoro();
-    toast("Pomodoro paused");
+
+    toast(
+      "Pomodoro paused"
+    );
+
     return;
+
   }
+
+
   running=true;
+
   updatePomodoro();
+
 
   interval=setInterval(()=>{
+
     seconds--;
+
+
     updatePomodoro();
+
+
     if(seconds<=0){
-      clearInterval(interval);
+
+      clearInterval(
+        interval
+      );
+
+
       running=false;
 
+
       if(mode==="focus"){
+
         sessions++;
+
         studyMinutes+=50;
-        set(KEY.sessions, sessions);
-        set(KEY.minutes, studyMinutes);
+
+
+        set(
+          KEY.sessions,
+          sessions
+        );
+
+
+        set(
+          KEY.minutes,
+          studyMinutes
+        );
+
+
         mode="break";
+
         seconds=BREAK;
-        toast("৫০ মিনিট Focus complete! 🎉 ১০ মিনিট Break শুরু হয়েছে.");
+
+
+        toast(
+          "৫০ মিনিট Focus complete! 🎉 ১০ মিনিট Break শুরু হয়েছে."
+        );
+
       }else{
+
         mode="focus";
+
         seconds=FOCUS;
-        toast("Break শেষ! আবার Focus শুরু করুন ⚡");
+
+
+        toast(
+          "Break শেষ! আবার Focus শুরু করুন ⚡"
+        );
+
       }
+
+
       updatePomodoro();
+
       updateStats();
+
       renderChart();
+
     }
+
   },1000);
+
 }
+
+
 
 function resetPomodoro(){
-  clearInterval(interval);
+
+  clearInterval(
+    interval
+  );
+
+
   running=false;
+
   mode="focus";
+
   seconds=FOCUS;
+
+
   updatePomodoro();
-  toast("Pomodoro reset হয়েছে");
+
+
+  toast(
+    "Pomodoro reset হয়েছে"
+  );
+
 }
 
-document.getElementById("startBtn").addEventListener("click", startPomodoro);
-document.getElementById("resetBtn").addEventListener("click", resetPomodoro);
+
+
+document
+  .getElementById("startBtn")
+  .addEventListener(
+    "click",
+    startPomodoro
+  );
+
+
+document
+  .getElementById("resetBtn")
+  .addEventListener(
+    "click",
+    resetPomodoro
+  );
+
+
 
 /* =========================================
    CHART
 ========================================= */
-function renderChart(){
-  const current=studyMinutes || 40;
-  const data=[
-    ["Sat",90], ["Sun",135], ["Mon",210], ["Tue",current], ["Wed",175], ["Thu",120], ["Fri",195]
-  ];
-  const max=Math.max(...data.map(x=>x[1]));
 
-  document.getElementById("chart").innerHTML=data.map(x=>{
-    const h = Math.max(7, Math.round((x[1]/max)*100));
-    return `
-      <div class="chart-col">
-        <div class="chart-time">${x[1]}m</div>
-        <div class="chart-track">
-          <div class="chart-bar" data-height="${h}%"></div>
+function renderChart(){
+
+  const current=
+    studyMinutes || 40;
+
+
+  const data=[
+
+    ["Sat",90],
+
+    ["Sun",135],
+
+    ["Mon",210],
+
+    ["Tue",current],
+
+    ["Wed",175],
+
+    ["Thu",120],
+
+    ["Fri",195]
+
+  ];
+
+
+  const max=Math.max(
+    ...data.map(
+      x=>x[1]
+    )
+  );
+
+
+  document.getElementById(
+    "chart"
+  ).innerHTML=
+
+
+    data.map(x=>{
+
+      const h=Math.max(
+
+        7,
+
+        Math.round(
+          (x[1]/max)*100
+        )
+
+      );
+
+
+      return `
+
+        <div class="chart-col">
+
+          <div class="chart-time">
+
+            ${x[1]}m
+
+          </div>
+
+
+          <div class="chart-track">
+
+            <div
+              class="chart-bar"
+              data-height="${h}%"
+            ></div>
+
+          </div>
+
+
+          <div class="chart-day">
+
+            ${x[0]}
+
+          </div>
+
         </div>
-        <div class="chart-day">${x[0]}</div>
-      </div>
-    `;
-  }).join("");
+
+      `;
+
+    }).join("");
+
 
   requestAnimationFrame(()=>{
-    document.querySelectorAll(".chart-bar").forEach(bar=>{
-      bar.style.height=bar.dataset.height;
-    });
+
+    document
+      .querySelectorAll(".chart-bar")
+      .forEach(bar=>{
+
+        bar.style.height=
+          bar.dataset.height;
+
+      });
+
   });
+
 }
+
+
 
 /* =========================================
    SUBJECT PROGRESS
 ========================================= */
+
 function animateBars(){
-  document.querySelectorAll(".bar").forEach(bar=>{
-    setTimeout(()=>{
-      bar.style.width=bar.dataset.value+"%";
-    },150);
-  });
+
+  document
+    .querySelectorAll(".bar")
+    .forEach(bar=>{
+
+      setTimeout(()=>{
+
+        bar.style.width=
+          bar.dataset.value+"%";
+
+      },150);
+
+    });
+
 }
+
+
 
 /* =========================================
    NOTE
 ========================================= */
-const note=document.getElementById("note");
-note.value=get(KEY.note,"");
-note.addEventListener("input", ()=>{ set(KEY.note, note.value); });
+
+const note=
+  document.getElementById(
+    "note"
+  );
+
+
+note.value=
+  get(
+    KEY.note,
+    ""
+  );
+
+
+note.addEventListener(
+  "input",
+  ()=>{
+
+    set(
+      KEY.note,
+      note.value
+    );
+
+  }
+);
+
+
 
 /* =========================================
    THEME
 ========================================= */
+
 function applyTheme(){
-  const theme=get(KEY.theme,"dark");
+
+  const theme=
+    get(
+      KEY.theme,
+      "dark"
+    );
+
+
   if(theme==="light"){
-    document.body.classList.add("light");
-    document.getElementById("themeBtn").textContent="☾";
+
+    document.body.classList.add(
+      "light"
+    );
+
+
+    document.getElementById(
+      "themeBtn"
+    ).textContent=
+      "☾";
+
   }else{
-    document.body.classList.remove("light");
-    document.getElementById("themeBtn").textContent="☀";
+
+    document.body.classList.remove(
+      "light"
+    );
+
+
+    document.getElementById(
+      "themeBtn"
+    ).textContent=
+      "☀";
+
   }
+
 }
 
-document.getElementById("themeBtn").addEventListener("click", ()=>{
-  const light=document.body.classList.toggle("light");
-  set(KEY.theme, light ? "light" : "dark");
-  document.getElementById("themeBtn").textContent = light ? "☾" : "☀";
-  toast(light ? "Light mode on" : "Dark mode on 🌙");
-  
-  // Update Google Sign in button theme dynamically
-  const existingGoogleBtn = document.querySelector('.g_id_signin');
-  if (existingGoogleBtn) {
-    existingGoogleBtn.setAttribute('data-theme', light ? 'outline' : 'filled_black');
-    if (typeof google !== 'undefined') google.accounts.id.prompt(); 
-  }
-});
+
+
+document
+  .getElementById("themeBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      const light=
+        document.body.classList.toggle(
+          "light"
+        );
+
+
+      set(
+        KEY.theme,
+        light
+          ? "light"
+          : "dark"
+      );
+
+
+      document.getElementById(
+        "themeBtn"
+      ).textContent=
+
+        light
+          ? "☾"
+          : "☀";
+
+
+      toast(
+
+        light
+          ? "Light mode on"
+          : "Dark mode on 🌙"
+
+      );
+
+    }
+  );
+
+
 
 /* =========================================
    MOBILE SIDEBAR
 ========================================= */
-document.getElementById("menuBtn").addEventListener("click", ()=>{
-  document.getElementById("sidebar").classList.toggle("open");
-});
+
+document
+  .getElementById("menuBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      document
+        .getElementById("sidebar")
+        .classList.toggle(
+          "open"
+        );
+
+    }
+  );
+
+
 
 /* =========================================
    NOTIFICATION
 ========================================= */
-document.getElementById("notifyBtn").addEventListener("click", ()=>{
-  toast("আজকের জন্য নতুন notification নেই ✦");
-});
+
+document
+  .getElementById("notifyBtn")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      toast(
+        "আজকের জন্য নতুন notification নেই ✦"
+      );
+
+    }
+  );
+
+
 
 /* =========================================
    NAV SCROLL
 ========================================= */
+
 function scrollToSection(id){
-  const el=document.getElementById(id);
-  if(el){ el.scrollIntoView({behavior:"smooth", block:"center"}); }
-  document.getElementById("sidebar").classList.remove("open");
+
+  const el=
+    document.getElementById(id);
+
+
+  if(el){
+
+    el.scrollIntoView({
+
+      behavior:"smooth",
+
+      block:"center"
+
+    });
+
+  }
+
+
+  document
+    .getElementById("sidebar")
+    .classList.remove(
+      "open"
+    );
+
 }
+
+
 
 /* =========================================
    FULLSCREEN POMODORO
 ========================================= */
+
 function openPomodoroFullscreen(){
-  const screen=document.getElementById("pomodoroFullscreen");
-  screen.classList.add("active");
-  screen.setAttribute("aria-hidden","false");
+
+  const screen=
+    document.getElementById(
+      "pomodoroFullscreen"
+    );
+
+
+  screen.classList.add(
+    "active"
+  );
+
+
+  screen.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+
   updatePomodoro();
-  if(screen.requestFullscreen){ screen.requestFullscreen().catch(()=>{}); }
+
+
+  if(screen.requestFullscreen){
+
+    screen
+      .requestFullscreen()
+      .catch(()=>{});
+
+  }
+
 }
+
+
 
 function closePomodoroFullscreen(){
-  const screen=document.getElementById("pomodoroFullscreen");
-  screen.classList.remove("active");
-  screen.setAttribute("aria-hidden","true");
-  if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); }
+
+  const screen=
+    document.getElementById(
+      "pomodoroFullscreen"
+    );
+
+
+  screen.classList.remove(
+    "active"
+  );
+
+
+  screen.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+
+  if(document.fullscreenElement){
+
+    document
+      .exitFullscreen()
+      .catch(()=>{});
+
+  }
+
 }
 
-document.addEventListener("keydown", e=>{
-  if(e.key==="Escape" && document.getElementById("pomodoroFullscreen").classList.contains("active")){
-    closePomodoroFullscreen();
-  }
-});
 
-document.addEventListener("fullscreenchange", ()=>{
-  if(!document.fullscreenElement){
-    const screen=document.getElementById("pomodoroFullscreen");
-    if(screen){ screen.classList.remove("active"); screen.setAttribute("aria-hidden","true"); }
+
+document.addEventListener(
+  "keydown",
+  e=>{
+
+    if(
+
+      e.key==="Escape"
+
+      &&
+
+      document
+        .getElementById(
+          "pomodoroFullscreen"
+        )
+        .classList.contains(
+          "active"
+        )
+
+    ){
+
+      closePomodoroFullscreen();
+
+    }
+
   }
-});
+);
+
+
+
+document.addEventListener(
+  "fullscreenchange",
+  ()=>{
+
+    if(!document.fullscreenElement){
+
+      const screen=
+        document.getElementById(
+          "pomodoroFullscreen"
+        );
+
+
+      if(screen){
+
+        screen.classList.remove(
+          "active"
+        );
+
+
+        screen.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
 
 /* =========================================
    STARTUP
 ========================================= */
-document.getElementById("goalInput").value=goal;
+
+document.getElementById(
+  "goalInput"
+).value=goal;
+
+
 applyTheme();
+
 renderTasks();
+
 renderChart();
+
 animateBars();
+
 updatePomodoro();
+
 updateStats();
+
 </script>
 
 </body>
