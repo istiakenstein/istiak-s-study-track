@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<title>StudyKhata — Smart Study Dashboard</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#080b12;
+  --bg2:#0e121b;
+  --card:rgba(17,22,32,.82);
+  --solid:#111620;
+  --hover:#171d2a;
+  --border:rgba(255,255,255,.08);
+  --text:#f6f7fb;
+  --muted:#8e97a8;
+  --muted2:#626b7c;
+  --primary:#7c5cff;
+  --primary2:#9a83ff;
+  --cyan:#35d6ff;
+  --green:#38d39f;
+  --yellow:#ffc857;
+  --red:#ff6878;
+  --sidebar:248px;
+  --shadow:0 20px 60px rgba(0,0,0,.35);
+  --radius:22px;
+}
+
+body.light{
+  --bg:#f4f6fb;
+  --bg2:#eef1f7;
+  --card:rgba(255,255,255,.88);
+  --solid:#fff;
+  --hover:#f7f8fc;
+  --border:rgba(14,20,32,.08);
+  --text:#141923;
+  --muted:#687186;
+  --muted2:#9098a8;
+  --shadow:0 15px 45px rgba(26,34,52,.09);
+}
+
+body{
+  min-height:100vh;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 8% 5%,rgba(124,92,255,.1),transparent 25%),
+    radial-gradient(circle at 92% 8%,rgba(53,214,255,.06),transparent 22%),
+    var(--bg);
+  font-family:"Noto Sans Bengali","Inter",sans-serif;
+  transition:.3s;
+}
+
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:0}
+
+.app{min-height:100vh}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:var(--sidebar);
+  z-index:100;
+  padding:22px 16px;
+  border-right:1px solid var(--border);
+  background:rgba(8,11,18,.74);
+  backdrop-filter:blur(22px);
+  transition:.3s;
+}
+
+body.light .sidebar{
+  background:rgba(255,255,255,.84);
+}
+
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:7px 11px 28px;
+}
+
+.logo{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  color:#fff;
+  font-size:20px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--primary),#5d8bff);
+  box-shadow:0 10px 25px rgba(124,92,255,.28);
+}
+
+.brand h1{font-size:18px;font-weight:800}
+.brand p{font-size:10px;color:var(--muted)}
+
+.nav-title{
+  padding:10px 12px;
+  color:var(--muted2);
+  font-size:10px;
+  letter-spacing:1.4px;
+  font-weight:800;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.nav button{
+  width:100%;
+  padding:12px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--muted);
+  border-radius:13px;
+  background:transparent;
+  transition:.2s;
+  font-size:12px;
+  font-weight:700;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:var(--text);
+  background:rgba(124,92,255,.12);
+}
+
+.nav-icon{
+  width:29px;
+  height:29px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.04);
+}
+
+.nav button.active .nav-icon{
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),#5f85ff);
+}
+
+.profile{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:20px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:var(--card);
+}
+
+.avatar{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  color:#fff;
+  font-weight:800;
+  background:linear-gradient(135deg,#ff6b8b,#8b68ff);
+}
+
+.profile strong{font-size:11px}
+.profile small{display:block;color:var(--green);font-size:9px;margin-top:2px}
+
+main{
+  margin-left:var(--sidebar);
+  padding:24px 30px 40px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.topbar h2{
+  font-size:29px;
+  letter-spacing:-1px;
+  font-weight:800;
+}
+
+.topbar p{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  color:var(--text);
+  border:1px solid var(--border);
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+
+.mobile-btn{display:none}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:230px;
+  margin-bottom:18px;
+  padding:30px;
+  border:1px solid rgba(124,92,255,.18);
+  border-radius:var(--radius);
+  background:
+    radial-gradient(circle at 83% 25%,rgba(53,214,255,.1),transparent 25%),
+    radial-gradient(circle at 58% 100%,rgba(124,92,255,.2),transparent 42%),
+    linear-gradient(135deg,rgba(124,92,255,.13),rgba(17,22,32,.8));
+  box-shadow:var(--shadow);
+}
+
+body.light .hero{
+  background:
+    radial-gradient(circle at 83% 25%,rgba(53,214,255,.12),transparent 25%),
+    radial-gradient(circle at 58% 100%,rgba(124,92,255,.12),transparent 42%),
+    linear-gradient(135deg,#f2efff,#fff);
+}
+
+.hero-content{position:relative;z-index:2;max-width:650px}
+
+.badge{
+  display:inline-flex;
+  padding:6px 10px;
+  margin-bottom:13px;
+  border-radius:999px;
+  color:var(--primary2);
+  background:rgba(124,92,255,.12);
+  border:1px solid rgba(124,92,255,.15);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.hero h3{
+  font-size:clamp(26px,4vw,38px);
+  line-height:1.15;
+  letter-spacing:-1.2px;
+}
+
+.gradient{
+  background:linear-gradient(90deg,var(--primary2),var(--cyan));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  margin-top:10px;
+  max-width:550px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.8;
+}
+
+.hero-actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+
+.primary,
+.secondary{
+  padding:11px 16px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:800;
+  transition:.2s;
+}
+
+.primary{
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),#5f85ff);
+  box-shadow:0 9px 25px rgba(124,92,255,.27);
+}
+
+.secondary{
+  color:var(--text);
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+}
+
+.primary:hover,.secondary:hover{transform:translateY(-2px)}
+
+.orb{
+  position:absolute;
+  right:8%;
+  top:50%;
+  width:180px;
+  height:180px;
+  transform:translateY(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#a58eff,#6856db 44%,transparent 70%);
+  opacity:.3;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
+  margin-bottom:18px;
+}
+
+.stat{
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  transition:.2s;
+}
+
+.stat:hover{transform:translateY(-3px);background:var(--hover)}
+
+.stat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.stat-label{color:var(--muted);font-size:10px;font-weight:700}
+
+.stat-icon{
+  width:33px;
+  height:33px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(124,92,255,.12);
+}
+
+.stat-value{
+  margin-top:11px;
+  font-size:25px;
+  font-weight:800;
+  letter-spacing:-.7px;
+}
+
+.stat-sub{color:var(--muted2);font-size:9px;margin-top:3px}
+
+.content{
+  display:grid;
+  grid-template-columns:1.25fr .85fr;
+  gap:18px;
+}
+
+.stack{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.card{
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:19px 20px 14px;
+}
+
+.title{font-size:14px;font-weight:800}
+.subtitle{font-size:9px;color:var(--muted);margin-top:3px}
+
+.link-btn{
+  color:var(--primary2);
+  background:transparent;
+  font-size:10px;
+  font-weight:800;
+}
+
+.task-form{
+  display:flex;
+  gap:8px;
+  padding:0 20px 14px;
+}
+
+.input,.select{
+  width:100%;
+  padding:11px 12px;
+  color:var(--text);
+  outline:none;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--bg2);
+  font-size:10px;
+}
+
+.input:focus,.select:focus{border-color:rgba(124,92,255,.55)}
+
+.task-form .input{flex:1}
+.task-add{min-width:78px}
+
+.tasks{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:0 20px 20px;
+}
+
+.task{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(255,255,255,.018);
+}
+
+.task:hover{background:var(--hover)}
+
+.check{
+  position:relative;
+  width:20px;
+  height:20px;
+  flex:none;
+}
+
+.check input{display:none}
+
+.check span{
+  position:absolute;
+  inset:0;
+  cursor:pointer;
+  border:1px solid var(--muted2);
+  border-radius:7px;
+}
+
+.check input:checked + span{
+  border-color:transparent;
+  background:linear-gradient(135deg,var(--primary),#5f85ff);
+}
+
+.check input:checked + span:after{
+  content:"✓";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+}
+
+.task-info{flex:1;min-width:0}
+.task-name{font-size:10px;font-weight:700}
+.task.done .task-name{text-decoration:line-through;color:var(--muted)}
+.task-meta{font-size:8px;color:var(--muted2);margin-top:3px}
+
+.delete{
+  width:26px;
+  height:26px;
+  border-radius:8px;
+  color:var(--muted2);
+  background:transparent;
+}
+
+.delete:hover{
+  color:var(--red);
+  background:rgba(255,104,120,.08);
+}
+
+.empty{
+  padding:22px;
+  text-align:center;
+  color:var(--muted);
+  border:1px dashed var(--border);
+  border-radius:14px;
+  font-size:10px;
+}
+
+.pomodoro{
+  text-align:center;
+  padding-bottom:24px;
+}
+
+.pomo-session{
+  padding:7px 10px;
+  border-radius:999px;
+  color:var(--primary2);
+  background:rgba(124,92,255,.1);
+  font-size:9px;
+  font-weight:800;
+}
+
+.mode{
+  display:inline-block;
+  margin-top:2px;
+  padding:7px 11px;
+  border-radius:999px;
+  color:var(--cyan);
+  border:1px solid rgba(53,214,255,.13);
+  background:rgba(53,214,255,.07);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.timer{
+  margin-top:17px;
+  font-family:Inter,sans-serif;
+  font-size:clamp(60px,9vw,88px);
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-5px;
+  background:linear-gradient(135deg,var(--primary2),var(--cyan));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.pomo-status{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.pomo-actions{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:18px;
+}
+
+.pomo-actions button{min-width:100px}
+
+.goal{padding-bottom:20px}
+
+.goal-circle{
+  width:150px;
+  height:150px;
+  margin:9px auto 15px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle,var(--solid) 59%,transparent 60%),
+    conic-gradient(var(--primary) var(--angle),rgba(255,255,255,.06) 0);
+}
+
+.goal-percent{
+  font-size:28px;
+  font-weight:800;
+}
+
+.goal-small{
+  color:var(--muted);
+  font-size:8px;
+  text-align:center;
+  margin-top:2px;
+}
+
+.goal-edit{
+  display:flex;
+  gap:7px;
+  padding:0 20px;
+}
+
+.goal-edit .input{
+  width:95px;
+  text-align:center;
+}
+
+.subjects{
+  padding:0 20px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.subject{
+  display:grid;
+  grid-template-columns:88px 1fr 38px;
+  gap:10px;
+  align-items:center;
+}
+
+.subject-name{font-size:9px;font-weight:800}
+
+.bar-bg{
+  height:8px;
+  overflow:hidden;
+  border-radius:50px;
+  background:var(--bg2);
+}
+
+.bar{
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--primary),var(--cyan));
+  transition:1s ease;
+}
+
+.percent{
+  text-align:right;
+  font-size:8px;
+  color:var(--muted);
+}
+
+.chart{
+  height:220px;
+  padding:4px 20px 20px;
+  display:flex;
+  align-items:end;
+  gap:10px;
+}
+
+.chart-col{
+  flex:1;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+  align-items:center;
+  gap:7px;
+}
+
+.chart-time{
+  color:var(--text);
+  font-size:8px;
+  font-weight:800;
+}
+
+.chart-track{
+  width:100%;
+  max-width:40px;
+  height:175px;
+  display:flex;
+  align-items:end;
+  overflow:hidden;
+  border-radius:10px;
+  background:var(--bg2);
+}
+
+.chart-bar{
+  width:100%;
+  height:0;
+  border-radius:10px;
+  background:linear-gradient(180deg,var(--cyan),var(--primary));
+  transition:1s cubic-bezier(.2,.8,.2,1);
+}
+
+.chart-day{
+  color:var(--muted);
+  font-size:8px;
+  font-weight:800;
+}
+
+.streak-box{padding:20px}
+
+.streak-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.streak-number{
+  font-size:42px;
+  font-weight:800;
+  line-height:1;
+}
+
+.streak-label{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:4px;
+}
+
+.fire{
+  width:56px;
+  height:56px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  border:1px solid rgba(255,200,87,.14);
+  background:rgba(255,200,87,.09);
+  font-size:27px;
+}
+
+.days{
+  display:flex;
+  gap:6px;
+  margin-top:18px;
+}
+
+.day{
+  flex:1;
+  padding:8px 0;
+  text-align:center;
+  border-radius:9px;
+  color:var(--muted);
+  background:var(--bg2);
+  font-size:7px;
+}
+
+.day.active{
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),#5f85ff);
+}
+
+.note{
+  margin:0 20px 20px;
+  resize:vertical;
+}
+
+.reminder{
+  padding:20px;
+}
+
+.reminder-title{
+  display:inline-block;
+  margin-bottom:9px;
+  padding:6px 9px;
+  border-radius:999px;
+  color:var(--primary2);
+  background:rgba(124,92,255,.1);
+  font-size:8px;
+  font-weight:800;
+}
+
+.reminder strong{
+  display:block;
+  font-size:12px;
+  line-height:1.6;
+}
+
+.reminder p{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.7;
+  margin-top:6px;
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:999;
+  padding:12px 15px;
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--solid);
+  box-shadow:var(--shadow);
+  font-size:10px;
+  transform:translateY(15px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+
+.toast.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+@media(max-width:1100px){
+  :root{--sidebar:75px}
+
+  .sidebar{padding:18px 10px}
+  .brand{justify-content:center;padding:8px 0 25px}
+  .brand-text,.nav-title,.nav button span:not(.nav-icon),.profile-text{display:none}
+  .nav button{justify-content:center}
+  .profile{left:10px;right:10px;justify-content:center}
+  main{padding:22px}
+  .content{grid-template-columns:1fr}
+}
+
+@media(max-width:780px){
+  :root{--sidebar:0px}
+
+  .sidebar{
+    width:245px;
+    transform:translateX(-100%);
+  }
+
+  .sidebar.open{transform:translateX(0)}
+
+  .brand{justify-content:flex-start}
+  .brand-text,.nav-title,.nav button span:not(.nav-icon),.profile-text{display:block}
+  .nav button{justify-content:flex-start}
+  .profile{justify-content:flex-start}
+
+  main{
+    margin-left:0;
+    padding:17px 13px 30px;
+  }
+
+  .mobile-btn{display:block}
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .hero{padding:23px}
+  .hero h3{font-size:27px}
+  .orb{right:-55px;opacity:.12}
+}
+
+@media(max-width:540px){
+  .topbar h2{font-size:22px}
+
+  .task-form{
+    flex-direction:column;
+  }
+
+  .task-add{width:100%}
+
+  .subject{
+    grid-template-columns:72px 1fr 34px;
+    gap:7px;
+  }
+
+  .goal-edit .primary{padding-left:11px;padding-right:11px}
+
+  .timer{font-size:65px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+  <div class="brand">
+    <div class="logo">S</div>
+    <div class="brand-text">
+      <h1>StudyKhata</h1>
+      <p>Your study, organized.</p>
+    </div>
+  </div>
+
+  <div class="nav-title">MENU</div>
+
+  <nav class="nav">
+
+    <button class="active">
+      <span class="nav-icon">⌂</span>
+      <span>Dashboard</span>
+    </button>
+
+    <button onclick="scrollToSection('tasksCard')">
+      <span class="nav-icon">✓</span>
+      <span>Tasks</span>
+    </button>
+
+    <button onclick="scrollToSection('progressCard')">
+      <span class="nav-icon">◔</span>
+      <span>Progress</span>
+    </button>
+
+    <button onclick="scrollToSection('chartCard')">
+      <span class="nav-icon">▦</span>
+      <span>Analytics</span>
+    </button>
+
+    <button onclick="focusGoal()">
+      <span class="nav-icon">⚙</span>
+      <span>Goal</span>
+    </button>
+
+  </nav>
+
+  <div class="profile">
+    <div class="avatar">S</div>
+    <div class="profile-text">
+      <strong>Student</strong>
+      <small>● Online</small>
+    </div>
+  </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main>
+
+<!-- TOPBAR -->
+<div class="topbar">
+
+  <div>
+    <h2>আজকের Dashboard</h2>
+    <p id="dateText">আজকের পড়াশোনা শুরু করুন।</p>
+  </div>
+
+  <div class="actions">
+
+    <button class="icon-btn mobile-btn" id="menuBtn">☰</button>
+
+    <button class="icon-btn" id="themeBtn">☀</button>
+
+    <button class="icon-btn" id="notifyBtn">♢</button>
+
+  </div>
+
+</div>
+
+
+<!-- HERO -->
+<section class="hero">
+
+  <div class="hero-content">
+
+    <div class="badge">✦ STUDY MODE</div>
+
+    <h3>
+      আজকের লক্ষ্যটা
+      <span class="gradient">শেষ করি।</span>
+    </h3>
+
+    <p>
+      ছোট ছোট progress-ই শেষ পর্যন্ত বড় result তৈরি করে।
+      Focus করুন, Pomodoro চালু করুন এবং নিজের progress track করুন।
+    </p>
+
+    <div class="hero-actions">
+
+      <button class="primary" onclick="startPomodoro()">
+        ▶ Start Pomodoro
+      </button>
+
+      <button class="secondary" onclick="focusGoal()">
+        🎯 Set Goal
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="orb"></div>
+
+</section>
+
+
+<!-- STATS -->
+<section class="stats">
+
+  <div class="stat">
+
+    <div class="stat-top">
+      <span class="stat-label">আজকের Progress</span>
+      <span class="stat-icon">◔</span>
+    </div>
+
+    <div class="stat-value" id="statProgress">0%</div>
+
+    <div class="stat-sub">Daily goal completion</div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div class="stat-top">
+      <span class="stat-label">Study Time</span>
+      <span class="stat-icon">◷</span>
+    </div>
+
+    <div class="stat-value" id="statMinutes">0m</div>
+
+    <div class="stat-sub">আজকের পড়াশোনা</div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div class="stat-top">
+      <span class="stat-label">Completed</span>
+      <span class="stat-icon">✓</span>
+    </div>
+
+    <div class="stat-value" id="statCompleted">0</div>
+
+    <div class="stat-sub">Finished tasks</div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div class="stat-top">
+      <span class="stat-label">Streak</span>
+      <span class="stat-icon">🔥</span>
+    </div>
+
+    <div class="stat-value" id="statStreak">0d</div>
+
+    <div class="stat-sub">Keep going!</div>
+
+  </div>
+
+</section>
+
+
+<!-- CONTENT -->
+<section class="content">
+
+
+<!-- LEFT -->
+<div class="stack">
+
+
+<!-- TASKS -->
+<div class="card" id="tasksCard">
+
+  <div class="header">
+
+    <div>
+      <div class="title">আজ কী পড়বেন?</div>
+      <div class="subtitle">আপনার tasks এখানে manage করুন</div>
+    </div>
+
+    <button class="link-btn" onclick="clearTasks()">Reset</button>
+
+  </div>
+
+
+  <form class="task-form" id="taskForm">
+
+    <input
+      id="taskInput"
+      class="input"
+      placeholder="যেমন: গণিত — Trigonometry practice"
+      required
+    >
+
+    <select class="select" id="subjectSelect">
+
+      <option>গণিত</option>
+      <option>পদার্থবিজ্ঞান</option>
+      <option>রসায়ন</option>
+      <option>ইংরেজি</option>
+      <option>অন্যান্য</option>
+
+    </select>
+
+    <button class="primary task-add">
+      + যোগ
+    </button>
+
+  </form>
+
+
+  <div class="tasks" id="taskList"></div>
+
+</div>
+
+
+<!-- POMODORO -->
+<div class="card">
+
+  <div class="header">
+
+    <div>
+      <div class="title">🍅 Pomodoro</div>
+      <div class="subtitle">
+        50 মিনিট Focus • 10 মিনিট Break
+      </div>
+    </div>
+
+    <div class="pomo-session">
+      Session <span id="sessionCount">0</span>
+    </div>
+
+  </div>
+
+
+  <div class="pomodoro">
+
+    <div class="mode" id="pomoMode">FOCUS TIME</div>
+
+    <div class="timer" id="timer">50:00</div>
+
+    <div class="pomo-status" id="pomoStatus">
+      Stay focused. One session at a time.
+    </div>
+
+    <div class="pomo-actions">
+
+      <button class="primary" id="startBtn">
+        ▶ Start
+      </button>
+
+      <button class="secondary" id="resetBtn">
+        ↻ Reset
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- SUBJECT PROGRESS -->
+<div class="card" id="progressCard">
+
+  <div class="header">
+
+    <div>
+      <div class="title">বিষয়ভিত্তিক অগ্রগতি</div>
+      <div class="subtitle">Preparation কতদূর?</div>
+    </div>
+
+  </div>
+
+
+  <div class="subjects">
+
+    <div class="subject">
+      <div class="subject-name">গণিত</div>
+      <div class="bar-bg">
+        <div class="bar" data-value="78"></div>
+      </div>
+      <div class="percent">78%</div>
+    </div>
+
+    <div class="subject">
+      <div class="subject-name">পদার্থ</div>
+      <div class="bar-bg">
+        <div class="bar" data-value="63"></div>
+      </div>
+      <div class="percent">63%</div>
+    </div>
+
+    <div class="subject">
+      <div class="subject-name">রসায়ন</div>
+      <div class="bar-bg">
+        <div class="bar" data-value="84"></div>
+      </div>
+      <div class="percent">84%</div>
+    </div>
+
+    <div class="subject">
+      <div class="subject-name">ইংরেজি</div>
+      <div class="bar-bg">
+        <div class="bar" data-value="51"></div>
+      </div>
+      <div class="percent">51%</div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- CHART -->
+<div class="card" id="chartCard">
+
+  <div class="header">
+
+    <div>
+      <div class="title">শেষ ৭ দিনের পড়াশোনা</div>
+      <div class="subtitle">Daily study time</div>
+    </div>
+
+    <button class="link-btn" onclick="toast('Weekly report coming soon')">
+      Report
+    </button>
+
+  </div>
+
+  <div class="chart" id="chart"></div>
+
+</div>
+
+
+</div>
+
+
+<!-- RIGHT -->
+<div class="stack">
+
+
+<!-- GOAL -->
+<div class="card goal">
+
+  <div class="header">
+
+    <div>
+      <div class="title">🎯 আজকের লক্ষ্য</div>
+      <div class="subtitle">কত মিনিট পড়তে চান?</div>
+    </div>
+
+  </div>
+
+
+  <div
+    class="goal-circle"
+    id="goalCircle"
+    style="--angle:0deg"
+  >
+
+    <div>
+      <div class="goal-percent" id="goalPercent">0%</div>
+      <div class="goal-small">of daily goal</div>
+    </div>
+
+  </div>
+
+
+  <div class="goal-edit">
+
+    <input
+      class="input"
+      type="number"
+      min="10"
+      max="1440"
+      id="goalInput"
+      value="300"
+    >
+
+    <button
+      class="primary"
+      onclick="saveGoal()"
+    >
+      Save
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- STREAK -->
+<div class="card">
+
+  <div class="streak-box">
+
+    <div class="streak-top">
+
+      <div>
+
+        <div class="streak-number" id="streakNumber">0</div>
+
+        <div class="streak-label">
+          days study streak
+        </div>
+
+      </div>
+
+      <div class="fire">🔥</div>
+
+    </div>
+
+
+    <div class="days">
+
+      <div class="day">Sat</div>
+      <div class="day">Sun</div>
+      <div class="day active">Mon</div>
+      <div class="day active">Tue</div>
+      <div class="day">Wed</div>
+      <div class="day">Thu</div>
+      <div class="day">Fri</div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- NOTE -->
+<div class="card">
+
+  <div class="header">
+
+    <div>
+      <div class="title">📝 Quick Note</div>
+      <div class="subtitle">Important কিছু লিখে রাখুন</div>
+    </div>
+
+  </div>
+
+  <textarea
+    class="input note"
+    id="note"
+    rows="6"
+    placeholder="আজকে কী improve করতে হবে..."
+  ></textarea>
+
+</div>
+
+
+<!-- REMINDER -->
+<div class="card">
+
+  <div class="reminder">
+
+    <div class="reminder-title">⏰ REMINDER</div>
+
+    <strong>
+      আজকের target শেষ না হওয়া পর্যন্ত থামবেন না।
+    </strong>
+
+    <p>
+      Consistency beats motivation.
+    </p>
+
+  </div>
+
+</div>
+
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================
+   STORAGE
+========================================= */
+
+const KEY={
+  tasks:"studyKhata.tasks",
+  goal:"studyKhata.goal",
+  minutes:"studyKhata.minutes",
+  theme:"studyKhata.theme",
+  note:"studyKhata.note",
+  sessions:"studyKhata.sessions"
+};
+
+function get(key, fallback){
+  try{
+    const x=localStorage.getItem(key);
+    return x===null?fallback:JSON.parse(x);
+  }catch{
+    return fallback;
+  }
+}
+
+function set(key,value){
+  localStorage.setItem(key,JSON.stringify(value));
+}
+
+
+/* =========================================
+   STATE
+========================================= */
+
+let tasks=get(KEY.tasks,[
+  {
+    id:1,
+    name:"Physics — Current Electricity revision",
+    subject:"পদার্থবিজ্ঞান",
+    done:false
+  },
+  {
+    id:2,
+    name:"Math — Trigonometry practice",
+    subject:"গণিত",
+    done:true
+  },
+  {
+    id:3,
+    name:"Chemistry — Chemical Change MCQ",
+    subject:"রসায়ন",
+    done:false
+  }
+]);
+
+let goal=get(KEY.goal,300);
+let studyMinutes=get(KEY.minutes,0);
+let sessions=get(KEY.sessions,0);
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function escapeHTML(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function toast(message){
+
+  const t=document.getElementById("toast");
+
+  t.textContent=message;
+  t.classList.add("show");
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer=setTimeout(()=>{
+    t.classList.remove("show");
+  },2200);
+}
+
+
+/* =========================================
+   DATE
+========================================= */
+
+function updateDate(){
+
+  const d=new Date();
+
+  document.getElementById("dateText").textContent=
+    d.toLocaleDateString("bn-BD",{
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    })+" • Keep moving forward 🚀";
+}
+
+updateDate();
+
+
+/* =========================================
+   TASKS
+========================================= */
+
+function renderTasks(){
+
+  const box=document.getElementById("taskList");
+
+  if(!tasks.length){
+
+    box.innerHTML=`
+      <div class="empty">
+        এখনো কোনো task নেই। উপরে থেকে একটি task যোগ করুন।
+      </div>
+    `;
+
+    updateStats();
+    return;
+  }
+
+  box.innerHTML=tasks.map(task=>`
+
+    <div class="task ${task.done?"done":""}">
+
+      <label class="check">
+
+        <input
+          type="checkbox"
+          ${task.done?"checked":""}
+          onchange="toggleTask(${task.id})"
+        >
+
+        <span></span>
+
+      </label>
+
+      <div class="task-info">
+
+        <div class="task-name">
+          ${escapeHTML(task.name)}
+        </div>
+
+        <div class="task-meta">
+          ${escapeHTML(task.subject)} • Today
+        </div>
+
+      </div>
+
+      <button
+        class="delete"
+        onclick="deleteTask(${task.id})"
+      >×</button>
+
+    </div>
+
+  `).join("");
+
+  updateStats();
+}
+
+
+function toggleTask(id){
+
+  tasks=tasks.map(t=>
+    t.id===id
+      ? {...t,done:!t.done}
+      : t
+  );
+
+  set(KEY.tasks,tasks);
+
+  renderTasks();
+
+  if(tasks.find(t=>t.id===id)?.done){
+    toast("Task completed 🎉");
+  }
+}
+
+
+function deleteTask(id){
+
+  tasks=tasks.filter(t=>t.id!==id);
+
+  set(KEY.tasks,tasks);
+
+  renderTasks();
+
+  toast("Task deleted");
+}
+
+
+function clearTasks(){
+
+  tasks=[];
+
+  set(KEY.tasks,tasks);
+
+  renderTasks();
+
+  toast("Task list reset হয়েছে");
+}
+
+
+document.getElementById("taskForm").addEventListener("submit",e=>{
+
+  e.preventDefault();
+
+  const input=document.getElementById("taskInput");
+  const subject=document.getElementById("subjectSelect");
+
+  const name=input.value.trim();
+
+  if(!name){
+    toast("একটা task লিখুন");
+    return;
+  }
+
+  tasks.unshift({
+    id:Date.now(),
+    name,
+    subject:subject.value,
+    done:false
+  });
+
+  set(KEY.tasks,tasks);
+
+  input.value="";
+
+  renderTasks();
+
+  toast("Task যোগ হয়েছে ✦");
+});
+
+
+/* =========================================
+   GOAL + STATS
+========================================= */
+
+function updateGoal(){
+
+  const percent=Math.min(
+    100,
+    Math.round((studyMinutes/goal)*100)
+  );
+
+  document.getElementById("goalPercent")
+    .textContent=percent+"%";
+
+  document.getElementById("goalCircle")
+    .style.setProperty("--angle",(percent*3.6)+"deg");
+
+  document.getElementById("statProgress")
+    .textContent=percent+"%";
+}
+
+
+function updateStats(){
+
+  const completed=
+    tasks.filter(t=>t.done).length;
+
+  document.getElementById("statMinutes")
+    .textContent=studyMinutes+"m";
+
+  document.getElementById("statCompleted")
+    .textContent=completed;
+
+  const streak=Math.min(
+    7,
+    completed+Math.min(sessions,3)
+  );
+
+  document.getElementById("statStreak")
+    .textContent=streak+"d";
+
+  document.getElementById("streakNumber")
+    .textContent=streak;
+
+  updateGoal();
+}
+
+
+function saveGoal(){
+
+  const value=Number(
+    document.getElementById("goalInput").value
+  );
+
+  if(!value||value<10){
+    toast("Minimum goal 10 minutes");
+    return;
+  }
+
+  goal=value;
+
+  set(KEY.goal,goal);
+
+  updateStats();
+
+  toast("Daily goal saved 🎯");
+}
+
+
+function focusGoal(){
+
+  document.getElementById("goalInput").focus();
+
+  document.getElementById("goalInput")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+}
+
+
+/* =========================================
+   POMODORO 50 / 10
+========================================= */
+
+const FOCUS=50*60;
+const BREAK=10*60;
+
+let mode="focus";
+let seconds=FOCUS;
+let running=false;
+let interval=null;
+
+
+function formatTime(sec){
+
+  const m=Math.floor(sec/60);
+  const s=sec%60;
+
+  return String(m).padStart(2,"0")+
+         ":"+
+         String(s).padStart(2,"0");
+}
+
+
+function updatePomodoro(){
+
+  document.getElementById("timer")
+    .textContent=formatTime(seconds);
+
+  document.getElementById("sessionCount")
+    .textContent=sessions;
+
+  const modeEl=document.getElementById("pomoMode");
+
+  if(mode==="focus"){
+
+    modeEl.textContent="FOCUS TIME";
+    modeEl.style.color="var(--cyan)";
+
+    document.getElementById("pomoStatus")
+      .textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
+
+  }else{
+
+    modeEl.textContent="BREAK TIME";
+    modeEl.style.color="var(--green)";
+
+    document.getElementById("pomoStatus")
+      .textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার শুরু করুন.";
+  }
+
+  document.getElementById("startBtn")
+    .textContent=running?"Ⅱ Pause":"▶ Start";
+}
+
+
+function startPomodoro(){
+
+  if(running){
+
+    clearInterval(interval);
+
+    running=false;
+
+    updatePomodoro();
+
+    toast("Pomodoro paused");
+
+    return;
+  }
+
+  running=true;
+
+  updatePomodoro();
+
+  interval=setInterval(()=>{
+
+    seconds--;
+
+    updatePomodoro();
+
+    if(seconds<=0){
+
+      clearInterval(interval);
+
+      running=false;
+
+      if(mode==="focus"){
+
+        sessions++;
+
+        studyMinutes+=50;
+
+        set(KEY.sessions,sessions);
+        set(KEY.minutes,studyMinutes);
+
+        mode="break";
+        seconds=BREAK;
+
+        toast("৫০ মিনিট Focus complete! 🎉 ১০ মিনিট Break শুরু হয়েছে.");
+
+      }else{
+
+        mode="focus";
+        seconds=FOCUS;
+
+        toast("Break শেষ! আবার Focus শুরু করুন ⚡");
+      }
+
+      updatePomodoro();
+      updateStats();
+      renderChart();
+    }
+
+  },1000);
+}
+
+
+function resetPomodoro(){
+
+  clearInterval(interval);
+
+  running=false;
+  mode="focus";
+  seconds=FOCUS;
+
+  updatePomodoro();
+
+  toast("Pomodoro reset হয়েছে");
+}
+
+
+document.getElementById("startBtn")
+  .addEventListener("click",startPomodoro);
+
+document.getElementById("resetBtn")
+  .addEventListener("click",resetPomodoro);
+
+
+/* =========================================
+   CHART
+========================================= */
+
+function renderChart(){
+
+  const current=studyMinutes||40;
+
+  const data=[
+    ["Sat",90],
+    ["Sun",135],
+    ["Mon",210],
+    ["Tue",current],
+    ["Wed",175],
+    ["Thu",120],
+    ["Fri",195]
+  ];
+
+  const max=Math.max(...data.map(x=>x[1]));
+
+  document.getElementById("chart").innerHTML=
+    data.map(x=>{
+
+      const h=Math.max(
+        7,
+        Math.round((x[1]/max)*100)
+      );
+
+      return `
+        <div class="chart-col">
+
+          <div class="chart-time">${x[1]}m</div>
+
+          <div class="chart-track">
+
+            <div
+              class="chart-bar"
+              data-height="${h}%"
+            ></div>
+
+          </div>
+
+          <div class="chart-day">${x[0]}</div>
+
+        </div>
+      `;
+
+    }).join("");
+
+  requestAnimationFrame(()=>{
+
+    document.querySelectorAll(".chart-bar")
+      .forEach(bar=>{
+        bar.style.height=bar.dataset.height;
+      });
+
+  });
+}
+
+
+/* =========================================
+   SUBJECT PROGRESS
+========================================= */
+
+function animateBars(){
+
+  document.querySelectorAll(".bar")
+    .forEach(bar=>{
+
+      setTimeout(()=>{
+        bar.style.width=
+          bar.dataset.value+"%";
+      },150);
+
+    });
+}
+
+
+/* =========================================
+   NOTE
+========================================= */
+
+const note=document.getElementById("note");
+
+note.value=get(KEY.note,"");
+
+note.addEventListener("input",()=>{
+  set(KEY.note,note.value);
+});
+
+
+/* =========================================
+   THEME
+========================================= */
+
+function applyTheme(){
+
+  const theme=get(KEY.theme,"dark");
+
+  if(theme==="light"){
+
+    document.body.classList.add("light");
+
+    document.getElementById("themeBtn")
+      .textContent="☾";
+
+  }else{
+
+    document.body.classList.remove("light");
+
+    document.getElementById("themeBtn")
+      .textContent="☀";
+  }
+}
+
+
+document.getElementById("themeBtn")
+  .addEventListener("click",()=>{
+
+    const light=
+      document.body.classList.toggle("light");
+
+    set(KEY.theme,light?"light":"dark");
+
+    document.getElementById("themeBtn")
+      .textContent=light?"☾":"☀";
+
+    toast(
+      light
+        ?"Light mode on"
+        :"Dark mode on 🌙"
+    );
+  });
+
+
+/* =========================================
+   MOBILE SIDEBAR
+========================================= */
+
+document.getElementById("menuBtn")
+  .addEventListener("click",()=>{
+
+    document.getElementById("sidebar")
+      .classList.toggle("open");
+
+  });
+
+
+/* =========================================
+   NOTIFICATION
+========================================= */
+
+document.getElementById("notifyBtn")
+  .addEventListener("click",()=>{
+
+    toast("আজকের জন্য নতুন notification নেই ✦");
+
+  });
+
+
+/* =========================================
+   NAV SCROLL
+========================================= */
+
+function scrollToSection(id){
+
+  const el=document.getElementById(id);
+
+  if(el){
+
+    el.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  }
+
+  document.getElementById("sidebar")
+    .classList.remove("open");
+}
+
+
+/* =========================================
+   STARTUP
+========================================= */
+
+document.getElementById("goalInput")
+  .value=goal;
+
+applyTheme();
+renderTasks();
+renderChart();
+animateBars();
+updatePomodoro();
+updateStats();
+
+</script>
+
+</body>
+</html>
