@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#080b12">
-<title>StudyKhata — Smart Study Dashboard</title>
+<title>IA STUDY TRACKING </title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
@@ -789,6 +789,25 @@ body.light .hero{
   opacity:1;
 }
 
+/* =========================================
+   FULLSCREEN POMODORO
+========================================= */
+.pomodoro-fullscreen{
+  position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 45%,rgba(124,92,255,.14),transparent 36%),#05070d;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s ease;
+}
+.pomodoro-fullscreen.active{opacity:1;visibility:visible;pointer-events:auto}
+.fullscreen-content{width:min(1000px,92%);text-align:center}
+.fullscreen-label{color:var(--muted);font-size:11px;font-weight:800;letter-spacing:3px;margin-bottom:28px}
+.fullscreen-mode{display:inline-block;padding:8px 15px;border-radius:999px;color:var(--cyan);background:rgba(53,214,255,.07);border:1px solid rgba(53,214,255,.15);font-size:11px;font-weight:800;letter-spacing:2px}
+.fullscreen-timer{margin-top:35px;font-family:Inter,sans-serif;font-size:clamp(90px,18vw,210px);line-height:.9;font-weight:800;letter-spacing:-10px;background:linear-gradient(135deg,var(--primary2),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.fullscreen-status{margin-top:28px;color:var(--muted);font-size:12px}
+.fullscreen-session{margin-top:12px;color:var(--muted2);font-size:10px}.fullscreen-session span{color:var(--primary2);font-weight:800}
+.fullscreen-actions{display:flex;justify-content:center;gap:10px;margin-top:30px}.fullscreen-actions button{min-width:110px}
+.fullscreen-exit{position:absolute;top:25px;right:25px;padding:10px 14px;color:var(--muted);border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.04);font-size:10px;font-weight:700}
+.fullscreen-exit:hover{color:var(--text);background:rgba(255,255,255,.08)}
+
 @media(max-width:1100px){
   :root{--sidebar:75px}
 
@@ -1098,8 +1117,11 @@ body.light .hero{
       </div>
     </div>
 
-    <div class="pomo-session">
-      Session <span id="sessionCount">0</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="pomo-session">
+        Session <span id="sessionCount">0</span>
+      </div>
+      <button class="secondary" type="button" onclick="openPomodoroFullscreen()">⛶ Full Screen</button>
     </div>
 
   </div>
@@ -1351,6 +1373,22 @@ body.light .hero{
 
 </div>
 
+
+<!-- FULLSCREEN POMODORO -->
+<div class="pomodoro-fullscreen" id="pomodoroFullscreen" aria-hidden="true">
+  <button class="fullscreen-exit" type="button" onclick="closePomodoroFullscreen()">✕ Exit</button>
+  <div class="fullscreen-content">
+    <div class="fullscreen-label">🍅 STUDYKHATA POMODORO</div>
+    <div class="fullscreen-mode" id="fullscreenMode">FOCUS TIME</div>
+    <div class="fullscreen-timer" id="fullscreenTimer">50:00</div>
+    <div class="fullscreen-status" id="fullscreenStatus">50 মিনিট শুধু পড়াশোনায় focus করুন.</div>
+    <div class="fullscreen-session">Session <span id="fullscreenSession">0</span></div>
+    <div class="fullscreen-actions">
+      <button class="primary fullscreen-start" type="button" onclick="startPomodoro()">▶ Start</button>
+      <button class="secondary" type="button" onclick="resetPomodoro()">↻ Reset</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -1703,33 +1741,37 @@ function formatTime(sec){
 
 function updatePomodoro(){
 
-  document.getElementById("timer")
-    .textContent=formatTime(seconds);
-
-  document.getElementById("sessionCount")
-    .textContent=sessions;
+  document.getElementById("timer").textContent=formatTime(seconds);
+  document.getElementById("sessionCount").textContent=sessions;
 
   const modeEl=document.getElementById("pomoMode");
+  const fullMode=document.getElementById("fullscreenMode");
+  const fullStatus=document.getElementById("fullscreenStatus");
 
   if(mode==="focus"){
-
     modeEl.textContent="FOCUS TIME";
     modeEl.style.color="var(--cyan)";
-
-    document.getElementById("pomoStatus")
-      .textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
-
+    document.getElementById("pomoStatus").textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
+    if(fullMode) fullMode.textContent="FOCUS TIME";
+    if(fullMode) fullMode.style.color="var(--cyan)";
+    if(fullStatus) fullStatus.textContent="50 মিনিট শুধু পড়াশোনায় focus করুন.";
   }else{
-
     modeEl.textContent="BREAK TIME";
     modeEl.style.color="var(--green)";
-
-    document.getElementById("pomoStatus")
-      .textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার শুরু করুন.";
+    document.getElementById("pomoStatus").textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
+    if(fullMode) fullMode.textContent="BREAK TIME";
+    if(fullMode) fullMode.style.color="var(--green)";
+    if(fullStatus) fullStatus.textContent="10 মিনিট বিশ্রাম নিন। তারপর আবার Focus শুরু করুন.";
   }
 
-  document.getElementById("startBtn")
-    .textContent=running?"Ⅱ Pause":"▶ Start";
+  document.getElementById("startBtn").textContent=running?"Ⅱ Pause":"▶ Start";
+
+  const fullTimer=document.getElementById("fullscreenTimer");
+  const fullSession=document.getElementById("fullscreenSession");
+  const fullStart=document.querySelector(".fullscreen-start");
+  if(fullTimer) fullTimer.textContent=formatTime(seconds);
+  if(fullSession) fullSession.textContent=sessions;
+  if(fullStart) fullStart.textContent=running?"Ⅱ Pause":"▶ Start";
 }
 
 
@@ -1997,6 +2039,37 @@ function scrollToSection(id){
     .classList.remove("open");
 }
 
+
+/* =========================================
+   FULLSCREEN POMODORO CONTROLS
+========================================= */
+function openPomodoroFullscreen(){
+  const screen=document.getElementById("pomodoroFullscreen");
+  screen.classList.add("active");
+  screen.setAttribute("aria-hidden","false");
+  updatePomodoro();
+  if(screen.requestFullscreen){screen.requestFullscreen().catch(()=>{});}
+}
+
+function closePomodoroFullscreen(){
+  const screen=document.getElementById("pomodoroFullscreen");
+  screen.classList.remove("active");
+  screen.setAttribute("aria-hidden","true");
+  if(document.fullscreenElement){document.exitFullscreen().catch(()=>{});}
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && document.getElementById("pomodoroFullscreen").classList.contains("active")){
+    closePomodoroFullscreen();
+  }
+});
+
+document.addEventListener("fullscreenchange",()=>{
+  if(!document.fullscreenElement){
+    const screen=document.getElementById("pomodoroFullscreen");
+    if(screen) {screen.classList.remove("active");screen.setAttribute("aria-hidden","true");}
+  }
+});
 
 /* =========================================
    STARTUP
