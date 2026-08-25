@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Study Tracker</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, select, button { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        input { flex: 2; min-width: 150px; }
+        select { flex: 1; min-width: 120px; }
+        button { background-color: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #2980b9; }
+        .log-list { list-style: none; padding: 0; }
+        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fafafa; margin-bottom: 10px; border-radius: 6px; border-left: 5px solid #3498db; }
+        .log-item.completed { border-left-color: #2ecc71; text-decoration: line-through; opacity: 0.7; }
+        .delete-btn { background-color: #e74c3c; padding: 6px 12px; font-size: 14px; }
+        .delete-btn:hover { background-color: #c0392b; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; text-align: center; }
+        .stat-card { background: #ebf5fb; padding: 15px; border-radius: 8px; font-weight: bold; color: #2980b9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📚 My Study Tracker</h1>
+    
+    <div class="stats">
+        <div class="stat-card">Total Sessions: <span id="total-sessions">0</span></div>
+        <div class="stat-card">Total Hours: <span id="total-hours">0</span></div>
+    </div>
+
+    <div class="form-group">
+        <input type="text" id="topic" placeholder="What did you study? (e.g., Calculus, History)">
+        <input type="number" id="hours" placeholder="Hours" min="0.1" step="0.1">
+        <button onclick="addLog()">Log Session</button>
+    </div>
+
+    <ul id="log-container" class="log-list"></ul>
+</div>
+
+<script>
+    // Load existing logs from the browser's memory automatically
+    let studyLogs = JSON.parse(localStorage.getItem('studyLogs')) || [];
+
+    function renderLogs() {
+        const container = document.getElementById('log-container');
+        container.innerHTML = '';
+        let totalHours = 0;
+
+        studyLogs.forEach((log, index) => {
+            totalHours += parseFloat(log.hours);
+            const li = document.createElement('li');
+            li.className = 'log-item';
+            li.innerHTML = `
+                <div>
+                    <strong>${log.topic}</strong> 
+                    <span style="color: #7f8c8d; margin-left: 10px;">⏱️ ${log.hours} hrs</span>
+                </div>
+                <button class="delete-btn" onclick="deleteLog(${index})">Delete</button>
+            `;
+            container.appendChild(li);
+        });
+
+        document.getElementById('total-sessions').innerText = studyLogs.length;
+        document.getElementById('total-hours').innerText = totalHours.toFixed(1);
+    }
+
+    function addLog() {
+        const topic = document.getElementById('topic').value.trim();
+        const hours = document.getElementById('hours').value;
+
+        if (!topic || !hours) {
+            alert('Please fill out both fields!');
+            return;
+        }
+
+        studyLogs.push({ topic, hours: parseFloat(hours) });
+        localStorage.setItem('studyLogs', JSON.stringify(studyLogs));
+        
+        document.getElementById('topic').value = '';
+        document.getElementById('hours').value = '';
+        renderLogs();
+    }
+
+    function deleteLog(index) {
+        studyLogs.splice(index, 1);
+        localStorage.setItem('studyLogs', JSON.stringify(studyLogs));
+        renderLogs();
+    }
+
+    // Run on page load
+    renderLogs();
+</script>
+
+</body>
+</html>
+
