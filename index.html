@@ -1,1222 +1,282 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080b12">
-<title>Istiak's Study Tracking</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>Istiaaaak </title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap');
-
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#080b12;
-  --bg2:#0d111a;
-  --card:rgba(15,20,30,.82);
-  --solid:#111622;
-  --hover:#181f2e;
-  --border:rgba(255,255,255,.08);
-  --border-glow:rgba(124,92,255,.35);
-  --text:#f6f7fb;
-  --muted:#8e97a8;
-  --muted2:#626b7c;
-  --primary:#7c5cff;
-  --primary2:#9a83ff;
-  --cyan:#35d6ff;
-  --green:#38d39f;
-  --yellow:#ffc857;
-  --red:#ff6878;
-  --sidebar:260px;
-  --shadow:0 20px 50px rgba(0,0,0,.4);
-  --radius:20px;
-  --transition:.25s cubic-bezier(.4,0,.2,1);
-}
-body.light{
-  --bg:#f0f2f8;
-  --bg2:#e4e8f2;
-  --card:rgba(255,255,255,.9);
-  --solid:#ffffff;
-  --hover:#f5f7fc;
-  --border:rgba(14,20,32,.08);
-  --border-glow:rgba(124,92,255,.25);
-  --text:#121620;
-  --muted:#5c6578;
-  --muted2:#8a93a5;
-  --shadow:0 12px 40px rgba(26,34,52,.08);
-}
-body.sidebar-collapsed{--sidebar:78px}
-body{
-  min-height:100vh;
-  color:var(--text);
-  background:
-    radial-gradient(circle at 8% 8%,rgba(124,92,255,.14),transparent 30%),
-    radial-gradient(circle at 92% 12%,rgba(53,214,255,.09),transparent 28%),
-    var(--bg);
-  font-family:"Noto Sans Bengali","Plus Jakarta Sans",sans-serif;
-  transition:background .35s,color .35s;
-  overflow-x:hidden;
-}
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(124,92,255,.35);border-radius:10px}
-::-webkit-scrollbar-thumb:hover{background:rgba(124,92,255,.55)}
-
-button,input,textarea,select{font:inherit}
-button{cursor:pointer;border:0;background:none}
-.app{min-height:100vh}
-
-/* Sidebar */
-.sidebar-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
-  z-index:99;display:none;opacity:0;transition:opacity .3s;
-}
-.sidebar-overlay.active{display:block;opacity:1}
-.sidebar{
-  position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);z-index:100;
-  padding:22px 16px;border-right:1px solid var(--border);
-  background:rgba(8,11,18,.88);backdrop-filter:blur(28px);
-  transition:width .3s ease,transform .3s ease,padding .3s ease;
-}
-body.light .sidebar{background:rgba(255,255,255,.92)}
-.collapse-toggle{
-  position:absolute;top:28px;right:-13px;width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(135deg,var(--primary),#5f85ff);color:#fff;
-  border:2px solid var(--bg);display:grid;place-items:center;font-size:11px;
-  z-index:101;box-shadow:0 4px 14px rgba(124,92,255,.4);transition:transform .3s,background .2s;
-}
-.collapse-toggle:hover{transform:scale(1.08)}
-body.sidebar-collapsed .collapse-toggle{transform:rotate(180deg)}
-.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 28px;transition:.3s}
-.logo{
-  width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;
-  color:#fff;font-size:20px;font-weight:800;
-  background:linear-gradient(135deg,var(--primary),#5d8bff);
-  box-shadow:0 10px 28px rgba(124,92,255,.4);
-}
-.brand h1{font-size:15px;font-weight:800;white-space:nowrap}
-.brand p{font-size:10px;color:var(--muted);white-space:nowrap;margin-top:1px}
-.nav-title{padding:8px 12px 6px;color:var(--muted2);font-size:10px;letter-spacing:1.6px;font-weight:800}
-.nav{display:flex;flex-direction:column;gap:5px}
-.nav button{
-  width:100%;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:12px;
-  color:var(--muted);border-radius:14px;font-size:12.5px;font-weight:700;
-  transition:var(--transition);white-space:nowrap;
-}
-.nav button:hover,.nav button.active{color:var(--text);background:rgba(124,92,255,.16)}
-.nav-icon{
-  width:30px;height:30px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;
-  background:rgba(255,255,255,.05);font-size:14px;transition:.2s;
-}
-.nav button.active .nav-icon{
-  color:#fff;background:linear-gradient(135deg,var(--primary),#5f85ff);
-  box-shadow:0 6px 16px rgba(124,92,255,.35);
-}
-.profile{
-  position:absolute;left:16px;right:16px;bottom:18px;display:flex;gap:11px;align-items:center;
-  padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--card);
-  transition:.3s;
-}
-.avatar{
-  width:40px;height:40px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;
-  color:#fff;font-weight:800;font-size:15px;
-  background:linear-gradient(135deg,#ff6b8b,#8b68ff);
-  box-shadow:0 8px 20px rgba(139,104,255,.3);
-}
-.profile strong{font-size:12.5px;display:block}
-.profile small{display:block;color:var(--green);font-size:9.5px;margin-top:2px;font-weight:600}
-body.sidebar-collapsed .brand-text,
-body.sidebar-collapsed .nav-title,
-body.sidebar-collapsed .nav button span:not(.nav-icon),
-body.sidebar-collapsed .profile-text{display:none!important}
-body.sidebar-collapsed .sidebar{padding:22px 10px}
-body.sidebar-collapsed .brand{justify-content:center;padding:4px 0 24px}
-body.sidebar-collapsed .nav button{justify-content:center;padding:12px 0}
-body.sidebar-collapsed .profile{left:10px;right:10px;justify-content:center;padding:10px 0}
-
-/* Main */
-main{margin-left:var(--sidebar);padding:26px 32px 50px;transition:margin-left .3s ease}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px}
-.topbar h2{font-size:26px;letter-spacing:-.6px;font-weight:800}
-.topbar p{color:var(--muted);font-size:12px;margin-top:3px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.icon-btn{
-  height:42px;padding:0 14px;border-radius:13px;color:var(--text);
-  border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow);
-  display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  font-size:12.5px;font-weight:700;transition:var(--transition);
-}
-.icon-btn:hover{border-color:var(--primary2);transform:translateY(-2px);box-shadow:0 10px 25px rgba(124,92,255,.2)}
-.mobile-btn{display:none}
-
-/* Hero */
-.hero{
-  position:relative;overflow:hidden;min-height:210px;margin-bottom:20px;padding:30px;
-  border:1px solid rgba(124,92,255,.22);border-radius:var(--radius);
-  background:
-    radial-gradient(circle at 88% 18%,rgba(53,214,255,.13),transparent 32%),
-    radial-gradient(circle at 55% 110%,rgba(124,92,255,.25),transparent 48%),
-    linear-gradient(135deg,rgba(124,92,255,.18),rgba(15,20,30,.9));
-  box-shadow:var(--shadow);
-}
-body.light .hero{
-  background:
-    radial-gradient(circle at 88% 18%,rgba(53,214,255,.18),transparent 32%),
-    radial-gradient(circle at 55% 110%,rgba(124,92,255,.18),transparent 48%),
-    linear-gradient(135deg,#f0ecff,#ffffff);
-}
-.hero-content{position:relative;z-index:2;max-width:680px}
-.badge{
-  display:inline-flex;padding:6px 13px;margin-bottom:12px;border-radius:999px;
-  color:var(--primary2);background:rgba(124,92,255,.15);border:1px solid rgba(124,92,255,.28);
-  font-size:10.5px;font-weight:800;letter-spacing:.7px;
-}
-.hero h3{font-size:clamp(24px,3.6vw,34px);line-height:1.25;letter-spacing:-.8px;font-weight:800}
-.gradient{background:linear-gradient(90deg,var(--primary2),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.7}
-.quote-box{
-  margin-top:16px;padding:13px 16px;background:rgba(255,255,255,.04);
-  border-left:3px solid var(--cyan);border-radius:10px;font-size:12.5px;color:var(--text);font-style:italic;
-}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.primary,.secondary{
-  padding:12px 20px;border-radius:13px;font-size:12.5px;font-weight:800;transition:var(--transition);
-}
-.primary{
-  color:#fff;background:linear-gradient(135deg,var(--primary),#5f85ff);
-  box-shadow:0 10px 28px rgba(124,92,255,.35);
-}
-.secondary{color:var(--text);border:1px solid var(--border);background:rgba(255,255,255,.06)}
-.primary:hover,.secondary:hover{transform:translateY(-2px)}
-
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.stat{
-  padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--card);
-  box-shadow:var(--shadow);transition:var(--transition);
-}
-.stat:hover{transform:translateY(-4px);border-color:var(--border-glow)}
-.stat-top{display:flex;align-items:center;justify-content:space-between}
-.stat-label{color:var(--muted);font-size:11px;font-weight:700}
-.stat-icon{
-  width:36px;height:36px;display:grid;place-items:center;border-radius:12px;
-  background:rgba(124,92,255,.14);color:var(--primary2);font-size:15px;
-}
-.stat-value{margin-top:12px;font-size:24px;font-weight:800;letter-spacing:-.6px}
-.stat-sub{color:var(--muted2);font-size:10px;margin-top:3px}
-.manual-add-box{display:flex;gap:6px;margin-top:10px}
-.mini-input{width:100%;padding:7px 10px!important;font-size:11px!important;border-radius:99px!important}
-.mini-btn{padding:7px 14px!important;font-size:12px!important;border-radius:9px!important;flex-shrink:0}
-
-/* Content Grid */
-.content{display:grid;grid-template-columns:1.35fr .85fr;gap:20px}
-.stack{display:flex;flex-direction:column;gap:20px}
-.card{
-  overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);
-  background:var(--card);box-shadow:var(--shadow);transition:border-color .25s;
-}
-.card:hover{border-color:var(--border-glow)}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 12px}
-.title{font-size:14.5px;font-weight:800}
-.subtitle{font-size:10.5px;color:var(--muted);margin-top:3px}
-.link-btn{color:var(--primary2);font-size:11px;font-weight:800;transition:.2s}
-.link-btn:hover{opacity:.8}
-.task-header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.task-filters{display:flex;background:var(--bg2);padding:3px;border-radius:10px;border:1px solid var(--border)}
-.filter-btn{padding:5px 11px;font-size:10px;font-weight:700;border-radius:8px;color:var(--muted);transition:.2s}
-.filter-btn.active{color:#fff;background:var(--primary)}
-
-/* Task Form */
-.task-form{display:flex;flex-wrap:wrap;gap:8px;padding:0 20px 16px;align-items:center}
-.input,.select{
-  padding:11px 14px;color:var(--text);outline:none;border:1px solid var(--border);
-  border-radius:13px;background:var(--bg2);font-size:12.5px;transition:.2s;
-}
-.task-form .input{flex:1 1 180px}
-.task-form .select{
-  flex:0 0 120px;padding-right:30px;cursor:pointer;appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238e97a8' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;
-}
-.task-add{flex:0 0 auto;padding:12px 18px;font-size:12.5px;white-space:nowrap;border-radius:13px}
-.input:focus,.select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(124,92,255,.2)}
-
-/* Tasks */
-.tasks{display:flex;flex-direction:column;gap:8px;padding:0 20px 20px;min-height:60px}
-.task{
-  display:flex;align-items:center;gap:12px;padding:13px 14px;
-  border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.02);
-  transition:all .22s ease;animation:fadeIn .3s ease;
-}
-.task:hover{background:var(--hover);transform:translateX(3px)}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.check{position:relative;width:22px;height:22px;flex:none}
-.check input{display:none}
-.check span{
-  position:absolute;inset:0;cursor:pointer;border:1.8px solid var(--muted2);
-  border-radius:7px;transition:.2s;
-}
-.check input:checked+span{border-color:transparent;background:linear-gradient(135deg,var(--primary),#5f85ff)}
-.check input:checked+span:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800}
-.task-info{flex:1;min-width:0}
-.task-name{font-size:13px;font-weight:700;transition:.2s}
-.task.done .task-name{text-decoration:line-through;color:var(--muted);opacity:.7}
-.tag-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:800;margin-top:4px}
-.tag-math{background:rgba(53,214,255,.15);color:var(--cyan)}
-.tag-physics{background:rgba(124,92,255,.15);color:var(--primary2)}
-.tag-chemistry{background:rgba(56,211,159,.15);color:var(--green)}
-.tag-biology{background:rgba(255,104,120,.15);color:var(--red)}
-.tag-english{background:rgba(255,200,87,.15);color:var(--yellow)}
-.tag-other{background:rgba(142,151,168,.15);color:var(--muted)}
-.priority-high{border-left:3px solid var(--red)}
-.priority-med{border-left:3px solid var(--yellow)}
-.priority-low{border-left:3px solid var(--green)}
-.delete{
-  width:30px;height:30px;border-radius:50%;color:var(--muted2);transition:.2s;font-size:14px;
-}
-.delete:hover{color:var(--red);background:rgba(255,104,120,.12)}
-.empty{
-  padding:40px 20px;text-align:center;color:var(--muted);border:1.5px dashed var(--border);
-  border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:6px;
-}
-.empty-icon{font-size:32px;opacity:.7}
-.empty-title{font-size:13px;font-weight:700;color:var(--text)}
-
-/* Pomodoro */
-.pomodoro{text-align:center;padding-bottom:22px}
-.pomo-session{padding:6px 12px;border-radius:999px;color:var(--primary2);background:rgba(124,92,255,.12);font-size:10px;font-weight:800}
-.mode{
-  display:inline-block;margin-top:4px;padding:6px 14px;border-radius:999px;color:var(--cyan);
-  border:1px solid rgba(53,214,255,.18);background:rgba(53,214,255,.08);font-size:10px;font-weight:800;letter-spacing:1px;
-}
-.timer{
-  margin-top:14px;font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:clamp(48px,6.5vw,70px);line-height:1;font-weight:800;letter-spacing:-2px;
-  background:linear-gradient(135deg,var(--primary2),var(--cyan));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.pomo-status{margin-top:8px;color:var(--muted);font-size:11.5px}
-.pomo-actions{display:flex;justify-content:center;gap:10px;margin-top:18px}
-.pomo-actions button{min-width:110px}
-.sound-player{display:flex;justify-content:center;gap:8px;padding:0 20px 16px;margin-top:12px;flex-wrap:wrap}
-.sound-btn{
-  padding:7px 13px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);
-  color:var(--muted);font-size:11px;font-weight:700;transition:.2s;
-}
-.sound-btn.active{color:#fff;background:var(--primary);border-color:var(--primary2)}
-
-/* Goal */
-.goal{padding-bottom:20px}
-.goal-circle{
-  width:150px;height:150px;margin:8px auto 16px;border-radius:50%;display:grid;place-items:center;
-  background:radial-gradient(circle,var(--solid) 58%,transparent 59%),
-             conic-gradient(var(--primary) var(--angle),rgba(255,255,255,.06) 0);
-  box-shadow:0 10px 30px rgba(124,92,255,.18);transition:--angle .6s ease;
-}
-.goal-percent{font-size:28px;font-weight:800}
-.goal-small{color:var(--muted);font-size:9px;text-align:center;margin-top:2px}
-.goal-edit{display:flex;gap:8px;padding:0 20px;justify-content:center}
-.goal-edit .input{width:110px;text-align:center;font-weight:700}
-
-/* Subjects */
-.subjects{padding:0 20px 20px;display:flex;flex-direction:column;gap:13px}
-.subject{display:grid;grid-template-columns:90px 1fr 40px;gap:10px;align-items:center}
-.subject-name{font-size:11.5px;font-weight:800}
-.bar-bg{height:9px;overflow:hidden;border-radius:50px;background:var(--bg2)}
-.bar{width:0%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--primary),var(--cyan));transition:width .7s cubic-bezier(.2,.8,.2,1)}
-.percent{text-align:right;font-size:10.5px;color:var(--muted);font-weight:700}
-
-/* Chart */
-.chart{height:200px;padding:4px 20px 20px;display:flex;align-items:end;gap:8px}
-.chart-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:6px}
-.chart-time{color:var(--text);font-size:9px;font-weight:800}
-.chart-track{width:100%;max-width:36px;height:150px;display:flex;align-items:end;overflow:hidden;border-radius:10px;background:var(--bg2)}
-.chart-bar{width:100%;height:0%;border-radius:10px;background:linear-gradient(180deg,var(--cyan),var(--primary));transition:height .8s cubic-bezier(.2,.8,.2,1)}
-.chart-day{color:var(--muted);font-size:10px;font-weight:800}
-
-/* Streak */
-.streak-box{padding:20px}
-.streak-top{display:flex;align-items:center;justify-content:space-between}
-.streak-number{font-size:40px;font-weight:800;line-height:1}
-.streak-label{color:var(--muted);font-size:11px;margin-top:4px}
-.fire{
-  width:52px;height:52px;display:grid;place-items:center;border-radius:16px;
-  border:1px solid rgba(255,200,87,.25);background:rgba(255,200,87,.12);font-size:26px;
-}
-.days{display:flex;gap:6px;margin-top:16px}
-.day{
-  flex:1;padding:8px 0;text-align:center;border-radius:99px;color:var(--muted);
-  background:var(--bg2);font-size:9px;font-weight:700;transition:.3s;
-}
-.day.active{color:#fff;background:linear-gradient(135deg,var(--primary),#5f85ff);box-shadow:0 4px 14px rgba(124,92,255,.35)}
-
-/* Note & Reminder */
-.note{margin:0 20px 18px;resize:vertical;min-height:100px}
-.reminder{padding:20px}
-.reminder-title{
-  display:inline-block;margin-bottom:8px;padding:5px 11px;border-radius:999px;
-  color:var(--primary2);background:rgba(124,92,255,.12);font-size:9px;font-weight:800;
-}
-.reminder strong{display:block;font-size:13px;line-height:1.55}
-.reminder p{color:var(--muted);font-size:12px;line-height:1.6;margin-top:6px}
-
-/* Toast */
-.toast{
-  position:fixed;right:20px;bottom:22px;z-index:999;padding:13px 18px;color:var(--text);
-  border:1px solid var(--border);border-radius:14px;background:var(--solid);box-shadow:var(--shadow);
-  font-size:12.5px;font-weight:600;transform:translateY(20px);opacity:0;pointer-events:none;transition:.3s;
-}
-.toast.show{transform:translateY(0);opacity:1}
-
-/* Fullscreen Pomodoro */
-.pomodoro-fullscreen{
-  position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 40%,rgba(124,92,255,.18),transparent 40%),#05070d;
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility .3s;
-}
-.pomodoro-fullscreen.active{opacity:1;visibility:visible;pointer-events:auto}
-.fullscreen-content{width:min(900px,92%);text-align:center}
-.fullscreen-label{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:3px;margin-bottom:24px}
-.fullscreen-mode{
-  display:inline-block;padding:8px 16px;border-radius:999px;color:var(--cyan);
-  background:rgba(53,214,255,.08);border:1px solid rgba(53,214,255,.2);font-size:12px;font-weight:800;letter-spacing:1.5px;
-}
-.fullscreen-timer{
-  margin-top:30px;font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:clamp(70px,15vw,150px);line-height:.9;font-weight:800;letter-spacing:-4px;
-  background:linear-gradient(135deg,var(--primary2),var(--cyan));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.fullscreen-status{margin-top:24px;color:var(--muted);font-size:14px}
-.fullscreen-session{margin-top:10px;color:var(--muted2);font-size:12px}
-.fullscreen-session span{color:var(--primary2);font-weight:800}
-.fullscreen-actions{display:flex;justify-content:center;gap:12px;margin-top:30px}
-.fullscreen-actions button{min-width:120px}
-.fullscreen-exit{
-  position:absolute;top:24px;right:24px;padding:10px 16px;color:var(--muted);
-  border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.05);
-  font-size:12px;font-weight:700;transition:.2s;
-}
-.fullscreen-exit:hover{color:var(--text);background:rgba(255,255,255,.1)}
-
-/* Responsive */
-@media(max-width:1100px){
-  .collapse-toggle{display:none}
-  :root{--sidebar:78px}
-  .sidebar{padding:18px 10px}
-  .brand{justify-content:center;padding:8px 0 22px}
-  .brand-text,.nav-title,.nav button span:not(.nav-icon),.profile-text{display:none}
-  .nav button{justify-content:center}
-  .profile{left:10px;right:10px;justify-content:center}
-  main{padding:20px}
-  .content{grid-template-columns:1fr}
-}
-@media(max-width:780px){
-  :root{--sidebar:0px}
-  .sidebar{width:260px;transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .brand{justify-content:flex-start}
-  .brand-text,.nav-title,.nav button span:not(.nav-icon),.profile-text{display:block}
-  .nav button{justify-content:flex-start}
-  .profile{justify-content:flex-start}
-  main{margin-left:0;padding:16px 12px 40px}
-  .mobile-btn{display:inline-flex}
-  .stats{grid-template-columns:1fr 1fr;gap:10px}
-  .hero{padding:22px}
-  .hero h3{font-size:24px}
-}
-@media(max-width:540px){
-  .topbar h2{font-size:20px}
-  .task-form{flex-direction:column}
-  .task-form .select,.task-add{width:100%;flex:1 1 auto}
-  .subject{grid-template-columns:75px 1fr 34px;gap:8px}
-  .timer{font-size:42px}
-}
+:root{--ink:#0a0a0b;--ink2:#131316;--ink3:#1c1c20;--ink4:#27272d;--fg:#f4f1ea;--mut:#9a9aa5;--faint:#6a6a74;--line:#2a2a30;--fw:#5b8cff;--warn:#f5a524;--good:#34d399;--on:#fff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--ink:#f2f2ee;--ink2:#fff;--ink3:#ebebe5;--ink4:#deded6;--fg:#17171a;--mut:#62626c;--faint:#8c8c96;--line:#d9d9d1;color-scheme:light}}
+:root[data-theme="light"]{--ink:#f2f2ee;--ink2:#fff;--ink3:#ebebe5;--ink4:#deded6;--fg:#17171a;--mut:#62626c;--faint:#8c8c96;--line:#d9d9d1;color-scheme:light}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{background:var(--ink);color:var(--fg);font-family:'Hind Siliguri','Plus Jakarta Sans',system-ui,sans-serif;min-height:100%;transition:background .4s,color .4s}
+button,input,textarea{font-family:inherit;color:inherit}button{cursor:pointer;transition:transform .12s,background .2s,color .2s,opacity .2s}button:active{transform:scale(.96)}
+.shell{display:flex;min-height:100dvh}
+aside{display:none;width:250px;flex:none}aside>div{position:sticky;top:0;height:100dvh;padding:12px}
+.side{height:100%;background:var(--ink2);border-radius:28px;padding:14px;display:flex;flex-direction:column}
+.brand{display:flex;gap:10px;align-items:center;padding:10px 6px 0}
+.logo{width:38px;height:38px;border-radius:22%;background:linear-gradient(135deg,var(--fw),#22d3ee);display:grid;place-items:center;font-size:20px}
+.brand b{font:800 15px 'Plus Jakarta Sans';display:block}.brand small{font-size:10px;letter-spacing:.2em;color:var(--faint);font-weight:600}
+.nl{display:flex;flex-direction:column;gap:4px;margin-top:32px}
+.nl button,.bn button{border:0;background:none;color:var(--mut);height:46px;border-radius:99px;padding:0 18px;font-size:15px;font-weight:600;text-align:left}
+.nl button:hover{background:var(--ink3);color:var(--fg)}
+.nl button.on,.bn button.on{background:var(--fw);color:var(--on)}
+.bn{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;gap:2px;background:var(--ink2);border:1px solid var(--line);border-radius:99px;padding:6px;max-width:460px;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.bn button{flex:1;padding:0;text-align:center;height:42px;font-size:13.5px}
+@media(min-width:768px){aside{display:block}.bn{display:none}}
+main{flex:1;min-width:0;max-width:680px;margin:0 auto;padding-bottom:110px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--ink) 85%,transparent);backdrop-filter:blur(14px);padding:18px 16px 10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+header p{font-size:13px;color:var(--mut)}
+h1{font:700 27px 'Plus Jakarta Sans','Hind Siliguri';line-height:1.2}
+.pill{display:flex;gap:10px;align-items:center;background:color-mix(in srgb,var(--fw) 16%,transparent);border-radius:16px;padding:8px 12px;flex:none}
+.pill b{display:block;font:700 13px 'Plus Jakarta Sans';font-variant-numeric:tabular-nums}.pill small{font-size:10px;color:var(--faint)}
+.pill i{width:1px;height:24px;background:var(--line)}.pill .l{color:var(--fw)}
+.wrap{padding:6px 16px;display:grid;gap:12px}
+.fade{animation:fd .35s cubic-bezier(.22,1,.36,1)}
+@keyframes fd{from{opacity:0;transform:translateY(10px)}}
+.card{background:var(--ink2);border-radius:24px;padding:14px}
+.card h2{font-size:15px;font-weight:600;padding:2px 4px 10px;display:flex;justify-content:space-between;align-items:center}
+.card h2 button{border:0;background:var(--ink3);border-radius:99px;padding:5px 13px;font-size:12.5px;font-weight:600}
+.bro{background:var(--ink2);border-radius:28px;min-height:21rem;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:30px 0 20px;cursor:pointer;user-select:none;touch-action:manipulation}
+.bro:fullscreen{border-radius:0;min-height:100dvh}
+.tag{position:absolute;top:14px;left:14px;background:var(--ink4);border-radius:99px;padding:4px 10px;font:700 10px 'Plus Jakarta Sans';letter-spacing:.1em;color:var(--mut)}
+.fs{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--ink4);font-size:16px}
+#eyes{display:flex;gap:20px;color:var(--warn);filter:drop-shadow(0 0 12px currentColor);transition:transform .4s cubic-bezier(.22,1,.36,1),color .7s}
+#eyes span{display:block;background:currentColor;transition:width .5s cubic-bezier(.22,1,.36,1),height .5s cubic-bezier(.22,1,.36,1),border-radius .5s,clip-path .5s,transform .14s}
+#eyes.bk span{transform:scaleY(.08)}#eyes.pk span{transform:scale(1.2,.3)}
+.clk{font:600 46px 'Plus Jakarta Sans';margin-top:22px;font-variant-numeric:tabular-nums}
+.bro p{font-size:13px;color:var(--mut)}.bro p.m{margin-top:8px;color:var(--fg);opacity:.85;padding:0 24px;text-align:center;min-height:20px}
+.go{width:100%;height:50px;border:0;border-radius:18px;background:var(--fw);color:var(--on);font-size:16px;font-weight:700}
+.bro .go{width:auto;padding:0 28px;margin-top:16px;height:44px;border-radius:99px}
+.go.stop{background:var(--warn);color:#1a1200}
+.sel{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;transition:opacity .3s}.sel.lock{opacity:.45;pointer-events:none}
+.chip{flex:none;border:0;background:var(--ink3);border-radius:99px;padding:8px 15px;font-size:14px;font-weight:500;color:var(--mut)}
+.chip.on{background:var(--fw);color:var(--on)}
+.task,.top{display:flex;align-items:center;gap:11px;background:var(--ink3);border-radius:16px;padding:10px 12px;margin-bottom:6px;font-size:15px;transition:background .25s}
+.task input,.top input{width:20px;height:20px;accent-color:var(--fw);flex:none}
+.task label,.top label{flex:1;transition:color .25s}.task.d{background:color-mix(in srgb,var(--good) 10%,var(--ink3))}.task.d label{text-decoration:line-through;color:var(--faint)}
+.x{border:0;background:none;color:var(--faint);font-size:20px;padding:0 4px}
+.add{display:flex;gap:8px;margin-top:6px}
+.add input,textarea{flex:1;min-width:0;background:var(--ink3);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font-size:14.5px;transition:border-color .2s}
+.add input:focus,textarea:focus{border-color:var(--fw);outline:0}
+.add button{border:0;background:var(--ink4);border-radius:14px;padding:0 18px;font-weight:600}
+.empty{color:var(--faint);font-size:14px;padding:4px 6px 8px}
+.wall{display:flex;flex-wrap:wrap;gap:8px}
+.w{background:var(--ink3);border-radius:16px;padding:10px 14px;font-size:14.5px;font-weight:500}
+.w:nth-child(3n+1){background:color-mix(in srgb,var(--fw) 18%,var(--ink3))}.w:nth-child(3n+2){background:color-mix(in srgb,var(--good) 16%,var(--ink3))}
+.w button{border:0;background:none;color:var(--faint);margin-left:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{font:700 32px 'Plus Jakarta Sans';font-variant-numeric:tabular-nums}.big small{font-size:14px;color:var(--mut);margin:0 6px 0 2px}
+.cap{font-size:13px;color:var(--mut)}
+.goal{display:flex;align-items:center;gap:16px}
+.ring{width:108px;height:108px;flex:none;transform:rotate(-90deg)}.rb,.rf{fill:none;stroke-width:9}.rb{stroke:var(--ink3)}
+.rf{stroke:var(--fw);stroke-linecap:round;stroke-dasharray:264;transition:stroke-dashoffset .8s cubic-bezier(.22,1,.36,1)}
+.gi{flex:1;min-width:0}.mini{border:0;background:var(--ink3);width:28px;height:28px;border-radius:50%;font-size:16px;margin:0 2px}
+.lv{margin-top:10px}.lv .pb{margin:5px 0 0}
+.days{display:flex;justify-content:space-between;margin-top:10px}
+.dd{text-align:center;font-size:12px;color:var(--faint)}.dd i{display:block;width:30px;height:30px;border-radius:50%;background:var(--ink3);margin:0 auto 5px;transition:background .3s}
+.dd.y i{background:var(--good)}.dd.t i{outline:2px solid var(--fw);outline-offset:2px}
+.top .n{width:24px}
+.bars{display:flex;align-items:flex-end;gap:5px;height:130px}.bars div{flex:1;text-align:center;font-size:10px;color:var(--faint)}
+.bars i{display:block;background:var(--fw);border-radius:6px 6px 3px 3px;min-height:3px;margin-bottom:5px;transform-origin:bottom;animation:gr .7s cubic-bezier(.22,1,.36,1)}
+@keyframes gr{from{transform:scaleY(0)}}
+.pb{height:7px;background:var(--ink3);border-radius:9px;overflow:hidden;margin:8px 0 10px}.pb i{display:block;height:100%;background:linear-gradient(90deg,var(--fw),#22d3ee);border-radius:9px;transition:width .6s cubic-bezier(.22,1,.36,1)}
+.sh{display:flex;justify-content:space-between;font-size:16px;font-weight:600}.sh span{font-size:13px;color:var(--mut);font-weight:400}
+.tabs{display:flex;gap:8px}
+.bt{width:100%;height:46px;border:0;border-radius:16px;background:var(--ink3);font-weight:600;font-size:15px;margin-top:8px}.bt.r{color:var(--warn)}
+textarea{width:100%;height:80px;margin-top:8px;display:block;resize:vertical}
+#toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--ink);padding:10px 18px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.22,1,.36,1);z-index:40;max-width:90%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.cf{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:50}
+:focus-visible{outline:2px solid var(--fw);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <button class="collapse-toggle" onclick="toggleSidebarCollapse()" title="Minimize / Expand">◀</button>
-    <div class="brand">
-      <div class="logo">I</div>
-      <div class="brand-text">
-        <h1>Istiak's Tracking</h1>
-        <p>Study & Productivity Pro</p>
-      </div>
-    </div>
-    <div class="nav-title">MENU</div>
-    <nav class="nav">
-      <button class="active" onclick="handleNavClick(this,'')" title="Dashboard">
-        <span class="nav-icon">⌂</span><span>Dashboard</span>
-      </button>
-      <button onclick="handleNavClick(this,'tasksCard')" title="Tasks">
-        <span class="nav-icon">✓</span><span>Tasks</span>
-      </button>
-      <button onclick="handleNavClick(this,'progressCard')" title="Progress">
-        <span class="nav-icon">◔</span><span>Progress</span>
-      </button>
-      <button onclick="handleNavClick(this,'chartCard')" title="Analytics">
-        <span class="nav-icon">▦</span><span>Analytics</span>
-      </button>
-      <button onclick="handleNavClick(this,'goalCard')" title="Goal">
-        <span class="nav-icon">🎯</span><span>Goal</span>
-      </button>
-    </nav>
-    <div class="profile">
-      <div class="avatar">I</div>
-      <div class="profile-text">
-        <strong>Istiak</strong>
-        <small>● Active Study Mode</small>
-      </div>
-    </div>
-  </aside>
-
-  <main>
-    <div class="topbar">
-      <div>
-        <h2>আজকের Dashboard</h2>
-        <p id="dateText">আজকের পড়াশোনা শুরু করুন।</p>
-      </div>
-      <div class="actions">
-        <button class="icon-btn mobile-btn" onclick="toggleMobileSidebar()">☰</button>
-        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Theme">☀</button>
-        <button class="icon-btn" onclick="exportData()" title="Export">📥 Backup</button>
-        <button class="icon-btn" onclick="resetAllData()" title="Reset" style="color:var(--red)">🗑️ Reset</button>
-      </div>
-    </div>
-
-    <section class="hero">
-      <div class="hero-content">
-        <div class="badge">✦ FOCUS & PRODUCTIVITY MODE</div>
-        <h3>আজকের লক্ষ্যটা <span class="gradient">সম্পন্ন করি।</span></h3>
-        <p><strong>Istiak, Never give up!</strong> ধারাবাহিকতাই সফলতার আসল চাবিকাঠি।</p>
-        <div class="quote-box" id="dailyQuote">"সাফল্য একদিনে আসে না, তবে প্রতিদিনের প্রচেষ্টায় তা নিশ্চিত হয়।"</div>
-        <div class="hero-actions">
-          <button class="primary" onclick="startPomodoro()">▶ Start Pomodoro</button>
-          <button class="secondary" onclick="focusGoal()">🎯 Set Goal</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div class="stat">
-        <div class="stat-top">
-          <span class="stat-label">আজকের Progress</span>
-          <span class="stat-icon">◔</span>
-        </div>
-        <div class="stat-value" id="statProgress">0%</div>
-        <div class="stat-sub">Daily goal completion</div>
-      </div>
-      <div class="stat">
-        <div class="stat-top">
-          <span class="stat-label">Study Time</span>
-          <span class="stat-icon">◷</span>
-        </div>
-        <div class="stat-value" id="statMinutes">0m</div>
-        <div class="manual-add-box">
-          <input type="number" id="manualMinInput" class="input mini-input" placeholder="+ মিনিট" min="1">
-          <button class="primary mini-btn" onclick="addManualMinutes()">+</button>
-        </div>
-      </div>
-      <div class="stat">
-        <div class="stat-top">
-          <span class="stat-label">Completed</span>
-          <span class="stat-icon">✓</span>
-        </div>
-        <div class="stat-value" id="statCompleted">0</div>
-        <div class="stat-sub">Finished tasks</div>
-      </div>
-      <div class="stat">
-        <div class="stat-top">
-          <span class="stat-label">Streak</span>
-          <span class="stat-icon">🔥</span>
-        </div>
-        <div class="stat-value" id="statStreak">0d</div>
-        <div class="stat-sub">Keep going!</div>
-      </div>
-    </section>
-
-    <section class="content">
-      <div class="stack">
-        <!-- Tasks -->
-        <div class="card" id="tasksCard">
-          <div class="header">
-            <div>
-              <div class="title">আজ কী পড়বেন?</div>
-              <div class="subtitle">Tasks এবং priority সেট করুন</div>
-            </div>
-            <div class="task-header-right">
-              <div class="task-filters">
-                <button class="filter-btn active" data-filter="all" onclick="setTaskFilter('all',this)">সব</button>
-                <button class="filter-btn" data-filter="pending" onclick="setTaskFilter('pending',this)">চলমান</button>
-                <button class="filter-btn" data-filter="done" onclick="setTaskFilter('done',this)">সম্পন্ন</button>
-              </div>
-              <button class="link-btn" onclick="clearTasks()">Reset List</button>
-            </div>
-          </div>
-          <form class="task-form" id="taskForm" onsubmit="handleAddTask(event)">
-            <input id="taskInput" class="input" placeholder="যেমন: Cell division practice" required>
-            <select class="select" id="subjectSelect">
-              <option value="গণিত">গণিত</option>
-              <option value="পদার্থবিজ্ঞান">পদার্থবিজ্ঞান</option>
-              <option value="রসায়ন">রসায়ন</option>
-              <option value="জীববিজ্ঞান">জীববিজ্ঞান</option>
-              <option value="ইংরেজি">ইংরেজি</option>
-              <option value="অন্যান্য">অন্যান্য</option>
-            </select>
-            <select class="select" id="prioritySelect">
-              <option value="med">Normal</option>
-              <option value="high">Urgent 🔴</option>
-              <option value="low">Easy 🟢</option>
-            </select>
-            <button class="primary task-add" type="submit">+ যোগ করুন</button>
-          </form>
-          <div class="tasks" id="taskList"></div>
-        </div>
-
-        <!-- Pomodoro -->
-        <div class="card">
-          <div class="header">
-            <div>
-              <div class="title">🍅 Pomodoro Focus & Ambient Sounds</div>
-              <div class="subtitle">50 মিনিট Focus • 10 মিনিট Break</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <div class="pomo-session">Session <span id="sessionCount">0</span></div>
-              <button class="secondary" onclick="openPomodoroFullscreen()">⛶ Full Screen</button>
-            </div>
-          </div>
-          <div class="pomodoro">
-            <div class="mode" id="pomoMode">FOCUS TIME</div>
-            <div class="timer" id="timer">50:00</div>
-            <div class="pomo-status" id="pomoStatus">Stay focused. One session at a time.</div>
-            <div class="pomo-actions">
-              <button class="primary" id="startBtn" onclick="togglePomodoro()">▶ Start</button>
-              <button class="secondary" onclick="resetPomodoro()">↻ Reset</button>
-            </div>
-            <div class="sound-player">
-              <button class="sound-btn" onclick="toggleSound('rain',this)">🌧 Rain</button>
-              <button class="sound-btn" onclick="toggleSound('cafe',this)">☕ Cafe</button>
-              <button class="sound-btn" onclick="toggleSound('waves',this)">🌊 Waves</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Progress -->
-        <div class="card" id="progressCard">
-          <div class="header">
-            <div>
-              <div class="title">বিষয়ভিত্তিক অগ্রগতি</div>
-              <div class="subtitle">Preparation কতদূর?</div>
-            </div>
-          </div>
-          <div class="subjects" id="subjectsContainer"></div>
-        </div>
-
-        <!-- Chart -->
-        <div class="card" id="chartCard">
-          <div class="header">
-            <div>
-              <div class="title">শেষ ৭ দিনের পড়াশোনা</div>
-              <div class="subtitle">Daily study minutes</div>
-            </div>
-          </div>
-          <div class="chart" id="chart"></div>
-        </div>
-      </div>
-
-      <div class="stack">
-        <!-- Goal -->
-        <div class="card goal" id="goalCard">
-          <div class="header">
-            <div>
-              <div class="title">🎯 আজকের লক্ষ্য</div>
-              <div class="subtitle">দৈনিক কত মিনিট পড়তে চান?</div>
-            </div>
-          </div>
-          <div class="goal-circle" id="goalCircle" style="--angle:0deg">
-            <div>
-              <div class="goal-percent" id="goalPercent">0%</div>
-              <div class="goal-small">of daily goal</div>
-            </div>
-          </div>
-          <div class="goal-edit">
-            <input class="input" type="number" min="10" max="1440" id="goalInput" value="300">
-            <button class="primary" onclick="saveGoal()">Save</button>
-          </div>
-        </div>
-
-        <!-- Streak -->
-        <div class="card">
-          <div class="streak-box">
-            <div class="streak-top">
-              <div>
-                <div class="streak-number" id="streakNumber">0</div>
-                <div class="streak-label">days study streak</div>
-              </div>
-              <div class="fire">🔥</div>
-            </div>
-            <div class="days" id="weekDays"></div>
-          </div>
-        </div>
-
-        <!-- Note -->
-        <div class="card">
-          <div class="header">
-            <div>
-              <div class="title">📝 Quick Note & Revision</div>
-              <div class="subtitle">জরুরি নোট বা রিভিশন লিস্ট</div>
-            </div>
-          </div>
-          <textarea class="input note" id="note" rows="5" placeholder="আজকে কী ইম্প্রুভ করতে হবে..."></textarea>
-        </div>
-
-        <!-- Reminder -->
-        <div class="card">
-          <div class="reminder">
-            <div class="reminder-title">⏰ DAILY MOTIVATION</div>
-            <strong>আজকের Target শেষ না হওয়া পর্যন্ত থামবেন না!</strong>
-            <p>ছোট ছোট পদক্ষেপ প্রতিদিন আপনাকে বড় লক্ষ্যের দিকে এগিয়ে নিয়ে যাবে।</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+<div class="shell">
+<aside><div><div class="side">
+ <div class="brand"><div class="logo">⚡</div><div><b>Istiak Bro</b><small>LIGHTNING</small></div></div>
+ <div class="nl" id="nl"></div>
+</div></div></aside>
+<main>
+ <header><div><p id="sub"></p><h1 id="ttl"></h1></div>
+ <div class="pill"><div><b id="hrs">0.0</b><small>ঘণ্টা আজ</small></div><i></i><div><b class="l" id="left">0:00</b><small>বাকি</small></div></div></header>
+ <div class="wrap" id="app"></div>
+</main>
 </div>
-
-<!-- Fullscreen Pomodoro -->
-<div class="pomodoro-fullscreen" id="pomodoroFullscreen">
-  <button class="fullscreen-exit" onclick="closePomodoroFullscreen()">✕ Exit</button>
-  <div class="fullscreen-content">
-    <div class="fullscreen-label">ISTIAK'S STUDY TRACKER</div>
-    <div class="fullscreen-mode" id="fsPomoMode">FOCUS TIME</div>
-    <div class="fullscreen-timer" id="fsTimer">50:00</div>
-    <div class="fullscreen-status" id="fsPomoStatus">Stay focused. One session at a time.</div>
-    <div class="fullscreen-session">Session <span id="fsSessionCount">0</span></div>
-    <div class="fullscreen-actions">
-      <button class="primary" id="fsStartBtn" onclick="togglePomodoro()">▶ Start</button>
-      <button class="secondary" onclick="resetPomodoro()">↻ Reset</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<nav class="bn" id="bn"></nav>
+<div id="toast" role="status"></div>
 
 <script>
-// ===================== DATA & STORAGE =====================
-const STORAGE_KEY = 'istiak_study_pro_v2';
-const SUBJECTS = ['গণিত','পদার্থবিজ্ঞান','রসায়ন','জীববিজ্ঞান','ইংরেজি','অন্যান্য'];
-
-const defaultState = {
-  theme: 'dark',
-  sidebarCollapsed: false,
-  dailyGoal: 300,
-  todayMinutes: 0,
-  sessionsCompleted: 0,
-  streak: 1,
-  lastActiveDate: new Date().toISOString().split('T')[0],
-  tasks: [],
-  notes: '',
-  history: [0, 0, 0, 0, 0, 0, 0] // Last 7 days in minutes
-};
-
-let appState = loadData();
-let activeFilter = 'all';
-
-// Audio Context Synthesizer for Ambient Sound
-let currentAudio = null;
-let audioCtx = null;
-
-// Pomodoro Timer Variables
-const FOCUS_TIME = 50 * 60;
-const BREAK_TIME = 10 * 60;
-let pomoTime = FOCUS_TIME;
-let pomoMode = 'focus';
-let pomoInterval = null;
-let isPomoRunning = false;
-
-// ===================== CORE INITIALIZATION =====================
-document.addEventListener('DOMContentLoaded', () => {
-  initDate();
-  applyTheme();
-  renderAll();
-
-  document.getElementById('note').addEventListener('input', (e) => {
-    appState.notes = e.target.value;
-    saveData();
-  });
-});
-
-function loadData() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  if (!data) return defaultState;
-  try {
-    const parsed = JSON.parse(data);
-    const today = new Date().toISOString().split('T')[0];
-    if (parsed.lastActiveDate !== today) {
-      // Check streak
-      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-      if (parsed.lastActiveDate === yesterday && parsed.todayMinutes > 0) {
-        parsed.streak += 1;
-      } else if (parsed.lastActiveDate !== yesterday) {
-        parsed.streak = 1;
-      }
-      // Rotate history array
-      parsed.history.shift();
-      parsed.history.push(parsed.todayMinutes || 0);
-      parsed.todayMinutes = 0;
-      parsed.lastActiveDate = today;
-    }
-    return { ...defaultState, ...parsed };
-  } catch (e) {
-    return defaultState;
-  }
-}
-
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-}
-
-function initDate() {
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  document.getElementById('dateText').textContent = new Date().toLocaleDateString('bn-BD', options);
-}
-
-// ===================== UI RENDERERS =====================
-function renderAll() {
-  renderStats();
-  renderTasks();
-  renderSubjects();
-  renderChart();
-  renderStreak();
-  document.getElementById('goalInput').value = appState.dailyGoal;
-  document.getElementById('note').value = appState.notes || '';
-}
-
-function renderStats() {
-  const completedTasks = appState.tasks.filter(t => t.done).length;
-  const progressPercent = Math.min(100, Math.round((appState.todayMinutes / appState.dailyGoal) * 100));
-
-  document.getElementById('statProgress').textContent = `${progressPercent}%`;
-  document.getElementById('statMinutes').textContent = `${appState.todayMinutes}m`;
-  document.getElementById('statCompleted').textContent = completedTasks;
-  document.getElementById('statStreak').textContent = `${appState.streak}d`;
-
-  // Goal ring update
-  const angle = (progressPercent / 100) * 360;
-  document.getElementById('goalCircle').style.setProperty('--angle', `${angle}deg`);
-  document.getElementById('goalPercent').textContent = `${progressPercent}%`;
-}
-
-function renderTasks() {
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
-
-  let filtered = appState.tasks;
-  if (activeFilter === 'pending') filtered = appState.tasks.filter(t => !t.done);
-  if (activeFilter === 'done') filtered = appState.tasks.filter(t => t.done);
-
-  if (filtered.length === 0) {
-    list.innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">📝</div>
-        <div class="empty-title">কোনো টাস্ক নেই</div>
-      </div>`;
-    return;
-  }
-
-  filtered.forEach(task => {
-    const el = document.createElement('div');
-    const subjectTagClass = getSubjectTagClass(task.subject);
-    el.className = `task priority-${task.priority} ${task.done ? 'done' : ''}`;
-    el.innerHTML = `
-      <label class="check">
-        <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${task.id})">
-        <span></span>
-      </label>
-      <div class="task-info">
-        <div class="task-name">${escapeHtml(task.name)}</div>
-        <span class="tag-badge ${subjectTagClass}">${task.subject}</span>
-      </div>
-      <button class="delete" onclick="deleteTask(${task.id})">✕</button>
-    `;
-    list.appendChild(el);
-  });
-}
-
-function getSubjectTagClass(subject) {
-  switch (subject) {
-    case 'গণিত': return 'tag-math';
-    case 'পদার্থবিজ্ঞান': return 'tag-physics';
-    case 'রসায়ন': return 'tag-chemistry';
-    case 'জীববিজ্ঞান': return 'tag-biology';
-    case 'ইংরেজি': return 'tag-english';
-    default: return 'tag-other';
-  }
-}
-
-function renderSubjects() {
-  const container = document.getElementById('subjectsContainer');
-  container.innerHTML = '';
-
-  SUBJECTS.forEach(sub => {
-    const total = appState.tasks.filter(t => t.subject === sub).length;
-    const done = appState.tasks.filter(t => t.subject === sub && t.done).length;
-    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-
-    const div = document.createElement('div');
-    div.className = 'subject';
-    div.innerHTML = `
-      <span class="subject-name">${sub}</span>
-      <div class="bar-bg"><div class="bar" style="width: ${pct}%"></div></div>
-      <span class="percent">${pct}%</span>
-    `;
-    container.appendChild(div);
-  });
-}
-
-function renderChart() {
-  const container = document.getElementById('chart');
-  container.innerHTML = '';
-
-  const days = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
-  const todayIdx = new Date().getDay();
-  const maxVal = Math.max(...appState.history, appState.todayMinutes, 180);
-
-  for (let i = 0; i < 7; i++) {
-    const val = (i === 6) ? appState.todayMinutes : appState.history[i];
-    const dayLabel = days[(todayIdx - 6 + i + 7) % 7];
-    const heightPct = Math.min(100, Math.round((val / maxVal) * 100));
-
-    const col = document.createElement('div');
-    col.className = 'chart-col';
-    col.innerHTML = `
-      <span class="chart-time">${val > 0 ? val + 'm' : ''}</span>
-      <div class="chart-track">
-        <div class="chart-bar" style="height: ${heightPct}%"></div>
-      </div>
-      <span class="chart-day">${dayLabel}</span>
-    `;
-    container.appendChild(col);
-  }
-}
-
-function renderStreak() {
-  document.getElementById('streakNumber').textContent = appState.streak;
-  const daysContainer = document.getElementById('weekDays');
-  daysContainer.innerHTML = '';
-
-  const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-  const today = new Date().getDay();
-
-  for (let i = 0; i < 7; i++) {
-    const dayDiv = document.createElement('div');
-    dayDiv.className = `day ${i === today ? 'active' : ''}`;
-    dayDiv.textContent = dayNames[i];
-    daysContainer.appendChild(dayDiv);
-  }
-}
-
-// ===================== TASK MANAGEMENT =====================
-function handleAddTask(e) {
-  e.preventDefault();
-  const input = document.getElementById('taskInput');
-  const subject = document.getElementById('subjectSelect').value;
-  const priority = document.getElementById('prioritySelect').value;
-
-  if (!input.value.trim()) return;
-
-  const newTask = {
-    id: Date.now(),
-    name: input.value.trim(),
-    subject,
-    priority,
-    done: false
-  };
-
-  appState.tasks.unshift(newTask);
-  saveData();
-  renderTasks();
-  renderSubjects();
-  input.value = '';
-  showToast('Task যোগ করা হয়েছে!');
-}
-
-function toggleTask(id) {
-  const task = appState.tasks.find(t => t.id === id);
-  if (task) {
-    task.done = !task.done;
-    saveData();
-    renderTasks();
-    renderSubjects();
-    renderStats();
-  }
-}
-
-function deleteTask(id) {
-  appState.tasks = appState.tasks.filter(t => t.id !== id);
-  saveData();
-  renderTasks();
-  renderSubjects();
-  renderStats();
-}
-
-function clearTasks() {
-  if (confirm('সব টাস্ক মুছে ফেলতে চান?')) {
-    appState.tasks = [];
-    saveData();
-    renderAll();
-  }
-}
-
-function setTaskFilter(filter, btn) {
-  activeFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderTasks();
-}
-
-// ===================== POMODORO TIMER =====================
-function togglePomodoro() {
-  if (isPomoRunning) {
-    pausePomodoro();
-  } else {
-    startPomodoroTimer();
-  }
-}
-
-function startPomodoro() {
-  document.getElementById('tasksCard').scrollIntoView({ behavior: 'smooth' });
-  if (!isPomoRunning) startPomodoroTimer();
-}
-
-function startPomodoroTimer() {
-  isPomoRunning = true;
-  updatePomoUI();
-  pomoInterval = setInterval(() => {
-    if (pomoTime > 0) {
-      pomoTime--;
-      updateTimerDisplay();
-    } else {
-      handlePomoFinish();
-    }
-  }, 1000);
-}
-
-function pausePomodoro() {
-  isPomoRunning = false;
-  clearInterval(pomoInterval);
-  updatePomoUI();
-}
-
-function resetPomodoro() {
-  pausePomodoro();
-  pomoTime = (pomoMode === 'focus') ? FOCUS_TIME : BREAK_TIME;
-  updateTimerDisplay();
-}
-
-function handlePomoFinish() {
-  pausePomodoro();
-  if (pomoMode === 'focus') {
-    appState.todayMinutes += 50;
-    appState.sessionsCompleted += 1;
-    saveData();
-    renderAll();
-    pomoMode = 'break';
-    pomoTime = BREAK_TIME;
-    showToast('🎉 Focus Session শেষ! ১০ মিনিট Break নিন।');
-  } else {
-    pomoMode = 'focus';
-    pomoTime = FOCUS_TIME;
-    showToast('Break শেষ! আবার পড়া শুরু করুন।');
-  }
-  updatePomoUI();
-  updateTimerDisplay();
-}
-
-function updateTimerDisplay() {
-  const m = String(Math.floor(pomoTime / 60)).padStart(2, '0');
-  const s = String(pomoTime % 60).padStart(2, '0');
-  const text = `${m}:${s}`;
-  document.getElementById('timer').textContent = text;
-  document.getElementById('fsTimer').textContent = text;
-  document.title = `${text} - ${pomoMode === 'focus' ? 'Focusing' : 'Break'} | Istiak's Tracker`;
-}
-
-function updatePomoUI() {
-  const btnText = isPomoRunning ? '⏸ Pause' : '▶ Start';
-  document.getElementById('startBtn').textContent = btnText;
-  document.getElementById('fsStartBtn').textContent = btnText;
-
-  const modeText = pomoMode === 'focus' ? 'FOCUS TIME' : 'BREAK TIME';
-  document.getElementById('pomoMode').textContent = modeText;
-  document.getElementById('fsPomoMode').textContent = modeText;
-
-  document.getElementById('sessionCount').textContent = appState.sessionsCompleted;
-  document.getElementById('fsSessionCount').textContent = appState.sessionsCompleted;
-}
-
-function openPomodoroFullscreen() {
-  document.getElementById('pomodoroFullscreen').classList.add('active');
-}
-
-function closePomodoroFullscreen() {
-  document.getElementById('pomodoroFullscreen').classList.remove('active');
-}
-
-// ===================== AMBIENT SOUNDS =====================
-function toggleSound(type, btn) {
-  const isPlaying = btn.classList.contains('active');
-  document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
-
-  if (currentAudio) {
-    currentAudio.stop();
-    currentAudio = null;
-  }
-
-  if (!isPlaying) {
-    btn.classList.add('active');
-    playSynthesizedSound(type);
-  }
-}
-
-function playSynthesizedSound(type) {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
-  const bufferSize = audioCtx.sampleRate * 2;
-  const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-  const output = noiseBuffer.getChannelData(0);
-  
-  for (let i = 0; i < bufferSize; i++) {
-    output[i] = Math.random() * 2 - 1;
-  }
-
-  const whiteNoise = audioCtx.createBufferSource();
-  whiteNoise.buffer = noiseBuffer;
-  whiteNoise.loop = true;
-
-  const filter = audioCtx.createBiquadFilter();
-  
-  if (type === 'rain') {
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(800, audioCtx.currentTime);
-  } else if (type === 'cafe') {
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1200, audioCtx.currentTime);
-  } else if (type === 'waves') {
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(400, audioCtx.currentTime);
-  }
-
-  const gainNode = audioCtx.createGain();
-  gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-
-  whiteNoise.connect(filter);
-  filter.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-
-  whiteNoise.start();
-  currentAudio = whiteNoise;
-}
-
-// ===================== GOAL & MANUAL TIME =====================
-function saveGoal() {
-  const val = parseInt(document.getElementById('goalInput').value);
-  if (val && val > 0) {
-    appState.dailyGoal = val;
-    saveData();
-    renderStats();
-    showToast('দৈনিক লক্ষ্য আপডেট হয়েছে!');
-  }
-}
-
-function focusGoal() {
-  document.getElementById('goalCard').scrollIntoView({ behavior: 'smooth' });
-  document.getElementById('goalInput').focus();
-}
-
-function addManualMinutes() {
-  const input = document.getElementById('manualMinInput');
-  const val = parseInt(input.value);
-  if (val && val > 0) {
-    appState.todayMinutes += val;
-    saveData();
-    renderAll();
-    input.value = '';
-    showToast(`${val} মিনিট যোগ করা হয়েছে!`);
-  }
-}
-
-// ===================== NAVIGATION & THEMING =====================
-function toggleTheme() {
-  appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
-  applyTheme();
-  saveData();
-}
-
-function applyTheme() {
-  if (appState.theme === 'light') {
-    document.body.classList.add('light');
-    document.getElementById('themeBtn').textContent = '🌙';
-  } else {
-    document.body.classList.remove('light');
-    document.getElementById('themeBtn').textContent = '☀';
-  }
-}
-
-function toggleSidebarCollapse() {
-  document.body.classList.toggle('sidebar-collapsed');
-}
-
-function toggleMobileSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('active');
-}
-
-function handleNavClick(btn, targetId) {
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (targetId) {
-    const el = document.getElementById(targetId);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  }
-  if (window.innerWidth <= 780) toggleMobileSidebar();
-}
-
-// ===================== UTILITIES =====================
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function exportData() {
-  const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Istiak_Study_Backup_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-}
-
-function resetAllData() {
-  if (confirm('আপনি কি নিশ্চিত যে আপনার সমস্ত ডাটা মুছে রিসেট করতে চান?')) {
-    localStorage.removeItem(STORAGE_KEY);
-    appState = { ...defaultState };
-    renderAll();
-    showToast('সব ডাটা রিসেট করা হয়েছে!');
-  }
-}
-
-function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, m => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-  })[m]);
-}
+(function(){
+var KEY='istiak-bro-v2',OLD='istiak-bro-v1';
+var PG=[['bro','ব্রো'],['courses','কোর্স'],['plan','প্ল্যান'],['stats','স্ট্যাটস'],['more','আরও']];
+var WD=['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'],WF=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+var MODES=[['স্টপওয়াচ',0],['২৫ মি',1500],['৪৫ মি',2700],['৬০ মি',3600]];
+var LV=['নতুন','শিক্ষার্থী','ফোকাসড','স্কলার','টপার','লিজেন্ড'];
+var MD={
+ sad:{c:'var(--warn)',w:40,h:49,r:'36%',l:'polygon(0 43%,100% 20%,100% 100%,0 100%)',q:'polygon(0 20%,100% 43%,100% 100%,0 100%)',t:'ATTENTION',m:['আজ এখনো কিছু পড়া হয়নি…','একটা সেশন শুরু করলেই মন ভালো হয়ে যাবে','আমি অপেক্ষায় আছি, ভাই']},
+ calm:{c:'var(--fw)',w:40,h:52,r:'40%',l:'none',q:'none',t:'WARMING UP',m:['ভালো শুরু! আরেকটু চালিয়ে যাও','গতি পেয়ে গেছ, থেমো না']},
+ focus:{c:'var(--fw)',w:42,h:62,r:'40%',l:'none',q:'none',t:'FOCUS',m:['ফোকাস চলছে… ফোন দূরে রাখো','একটাই কাজ, পুরো মন দিয়ে']},
+ happy:{c:'var(--good)',w:48,h:34,r:'50%',l:'none',q:'none',t:'ON FIRE',m:['দারুণ চলছে! এভাবেই এগোও','আজকের লক্ষ্য আর একটু বাকি']},
+ proud:{c:'var(--good)',w:46,h:58,r:'50%',l:'none',q:'none',t:'LEGEND',m:['লক্ষ্য পূরণ! BUET আরও কাছে ⚡','আজ তুমি অসাধারণ']}};
+var POKE=['এই! সুড়সুড়ি লাগে 😆','পড়তে বসো, গল্প পরে','আমি দেখছি কিন্তু 👀','Tony Stark হতে হলে পড়তে হবে','একটা সেশন হয়ে যাক?'];
+function def(){return{cur:0,mode:0,goal:14400,run:null,log:{},sl:{},tasks:{},eod:{},pd:0,edit:0,theme:'dark',gd:'',
+ wall:['BUET CSE ⚡','টনি স্টার্ক হওয়ার পথে','রোজ একটু একটু করে'],
+ subs:[{n:'Physics',t:[['Vector',0],['Newtonian Mechanics',0],['Thermodynamics',0],['Waves',0]]},
+ {n:'Chemistry',t:[['Atomic Structure',0],['Periodic Table',0],['Chemical Bonding',0]]},
+ {n:'Higher Math',t:[['Matrices',0],['Functions & Graphs',0],['Differentiation',0]]},
+ {n:'English',t:[['Grammar',0],['Vocabulary',0]]}]}}
+var S=null;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S){try{var o=JSON.parse(localStorage.getItem(OLD));if(o&&o.subs){S=o;S.mode=0;S.goal=14400;S.gd='';S.run=o.run?{t:o.run,tg:0,s:(o.subs[o.cur]||{}).n||''}:null}}catch(e){}}
+if(!S||!S.subs)S=def();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function p2(n){return n<10?'0'+n:''+n}
+function KD(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function K(o){var d=new Date();d.setDate(d.getDate()+(o||0));return KD(d)}
+function mid(){var d=new Date();d.setHours(0,0,0,0);return d.getTime()}
+function hh(s){return (s/3600).toFixed(1)}
+function hm(s){return [Math.floor(s/3600),Math.floor(s%3600/60)]}
+function fmt(s){var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+':':'')+p2(m)+':'+p2(s%60)}
+function pr(s){return s.split(',').map(Number)}
+function setT(id,t){var e=$(id);if(e&&e.textContent!==t)e.textContent=t}
+function setH(id,h){var e=$(id);if(e&&e.dataset.v!==h){e.dataset.v=h;e.innerHTML=h}}
+function runSec(){return S.run?Math.min(36000,Math.max(0,Math.floor((Date.now()-S.run.t)/1000))):0}
+function today(){var r=S.run?Math.min(36000,Math.max(0,Math.floor((Date.now()-Math.max(S.run.t,mid()))/1000))):0;return (S.log[K()]||0)+r}
+function streak(){var n=0,o=S.log[K()]||S.run?0:-1;while(S.log[K(o)]){n++;o--}return n}
+function total(){return Object.keys(S.log).reduce(function(a,k){return a+S.log[k]},0)}
+function lvl(){var xp=Math.floor(total()/36),L=Math.min(5,Math.floor(xp/400));return{L:L,xp:xp,p:L===5?100:Math.round(xp%400/4)}}
+function setTheme(){document.documentElement.dataset.theme=S.theme;document.querySelector('meta[name=theme-color]').content=S.theme==='light'?'#f2f2ee':'#0a0a0b'}
+setTheme();
+var page=(location.hash||'#bro').slice(1);if(!PG.some(function(p){return p[0]===page}))page='bro';
+var UI={pu:0,last:'',wl:null,tt:0};
+
+/* feedback */
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(UI.tt);UI.tt=setTimeout(function(){t.classList.remove('on')},2400)}
+function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+function beep(){try{var a=new (window.AudioContext||window.webkitAudioContext)(),t=a.currentTime;[0,.28].forEach(function(d){var o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.2,t+d);g.gain.exponentialRampToValueAtTime(.001,t+d+.22);o.start(t+d);o.stop(t+d+.24)})}catch(e){}buzz([200,100,200])}
+function burst(el){if(!el||matchMedia('(prefers-reduced-motion:reduce)').matches)return;var r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,C=['#5b8cff','#34d399','#f5a524','#f472b6','#22d3ee'];
+ for(var i=0;i<16;i++){var p=document.createElement('i');p.className='cf';p.style.cssText='left:'+x+'px;top:'+y+'px;background:'+C[i%5];document.body.appendChild(p);var a=Math.random()*6.28,d=50+Math.random()*70;
+ p.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d+30)+'px) scale(.3)',opacity:0}],{duration:700+Math.random()*300,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=(function(q){return function(){q.remove()}})(p)}}
+
+/* nav */
+function nav(){var h=PG.map(function(p){return '<button data-p="'+p[0]+'" class="'+(p[0]===page?'on':'')+'">'+p[1]+'</button>'}).join('');$('nl').innerHTML=h;$('bn').innerHTML=h}
+window.addEventListener('hashchange',function(){var n=location.hash.slice(1);if(PG.some(function(p){return p[0]===n})&&n!==page){page=n;nav();view(1)}});
+
+/* builders */
+function tcount(o){var L=S.tasks[K(o)]||[];return L.filter(function(t){return t[1]}).length+'/'+L.length+' শেষ'}
+function tasksH(o){var L=S.tasks[K(o)]||[];
+ return (L.length?L.map(function(t,i){return '<div class="task'+(t[1]?' d':'')+'"><input type="checkbox" id="k'+o+'_'+i+'" data-ck="'+o+','+i+'"'+(t[1]?' checked':'')+'><label for="k'+o+'_'+i+'">'+esc(t[0])+'</label><button class="x" aria-label="মুছে ফেলো" data-dl="'+o+','+i+'">×</button></div>'}).join(''):'<p class="empty">'+WF[new Date(Date.now()+o*864e5).getDay()]+'-এ কিছু বসানো নেই। নিচে লিখে যোগ করো।</p>')
+ +'<div class="add"><input data-in="t'+o+'" placeholder="নতুন টাস্ক লিখো" enterkeyhint="done"><button data-ad="t'+o+'">যোগ করো</button></div>'}
+var B={
+bro:function(){return '<div class="bro" id="broc"><span class="tag" id="tag"></span><button class="fs" data-a="fs" aria-label="ফুল স্ক্রিন">⛶</button><div id="eyes"><span></span><span></span></div><div class="clk" id="clk">--:--</div><p id="sub2"></p><p class="m" id="msg"></p><button class="go" id="bgo" data-a="run"></button></div>'},
+run:function(){return '<section class="card"><h2>কী পড়বে</h2><div class="sel'+(S.run?' lock':'')+'">'+S.subs.map(function(s,i){return '<button class="chip'+(i===S.cur?' on':'')+'" data-su="'+i+'">'+esc(s.n)+'</button>'}).join('')+'</div><div class="sel'+(S.run?' lock':'')+'">'+MODES.map(function(m,i){return '<button class="chip'+(i===S.mode?' on':'')+'" data-mo="'+i+'">'+m[0]+'</button>'}).join('')+'</div><button class="go" id="rgo" data-a="run" style="margin-top:6px"></button></section>'},
+goal:function(){var t=today(),L=lvl(),g=hm(S.goal);
+ return '<section class="card"><div class="goal"><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="42"/><circle class="rf" id="ring" cx="50" cy="50" r="42" style="stroke-dashoffset:'+Math.round(264*(1-Math.min(1,t/S.goal)))+'"/></svg><div class="gi"><p class="cap">আজ পড়েছ</p><p class="big" id="big"></p><p class="cap">লক্ষ্য <b>'+g[0]+'h'+(g[1]?' '+g[1]+'m':'')+'</b> <button class="mini" data-a="g-" aria-label="লক্ষ্য কমাও">−</button><button class="mini" data-a="g+" aria-label="লক্ষ্য বাড়াও">+</button></p></div></div>'
+ +'<div class="two" style="margin-top:12px"><div><p class="cap">টানা</p><p class="big">'+streak()+'<small>দিন</small></p></div><div class="lv"><p class="cap">লেভেল '+(L.L+1)+' · '+LV[L.L]+'</p><div class="pb"><i style="width:'+L.p+'%"></i></div></div></div></section>'},
+tasks:function(){return '<section class="card"><h2>আজকের টাস্ক লিস্ট<span class="cap" id="tc">'+tcount(0)+'</span></h2>'+tasksH(0)+'</section>'},
+wall:function(){return '<section class="card"><h2>আমার ওয়াল<button data-a="edit">'+(S.edit?'হয়েছে':'সাজাও')+'</button></h2><div class="wall">'+S.wall.map(function(w,i){return '<span class="w">'+esc(w)+(S.edit?'<button data-dw="'+i+'" aria-label="মুছো">×</button>':'')+'</span>'}).join('')+'</div>'+(S.edit?'<div class="add"><input data-in="w" placeholder="লক্ষ্য বা কথা লিখো"><button data-ad="w">যোগ</button></div>':'')+'</section>'},
+week:function(){var d=[];for(var i=6;i>=0;i--){var x=new Date();x.setDate(x.getDate()-i);d.push('<div class="dd'+(S.log[K(-i)]?' y':'')+(i===0?' t':'')+'"><i></i>'+WD[x.getDay()]+'</div>')}return '<section class="card"><p class="cap">গত ৭ দিন</p><div class="days">'+d.join('')+'</div></section>'},
+eod:function(){var n=S.eod[K()]||[0,0];return '<section class="card"><h2>দিন শেষের দুটো কাজ</h2><div class="top"><input type="checkbox" id="e0" data-eo="0"'+(n[0]?' checked':'')+'><label for="e0">আজ কী কী পড়লে, নোট করে রাখো</label></div><div class="top"><input type="checkbox" id="e1" data-eo="1"'+(n[1]?' checked':'')+'><label for="e1">কাল কী পড়বে, এখনই প্ল্যান করে ফেলো</label></div></section>'},
+log:function(){return '<section class="card"><h2>ডেইলি লগ</h2><div class="two"><div><p class="cap">গতকাল</p><p class="big">'+hh(S.log[K(-1)]||0)+'<small>ঘণ্টা</small></p></div><div><p class="cap">আজ</p><p class="big" id="lg"></p></div></div></section>'},
+courses:function(){return S.subs.map(function(s,i){var dn=s.t.filter(function(t){return t[1]}).length,p=s.t.length?Math.round(dn/s.t.length*100):0;
+ return '<section class="card"><div class="sh">'+esc(s.n)+'<span id="pt'+i+'">'+dn+'/'+s.t.length+' · '+p+'%</span></div><div class="pb"><i id="pb'+i+'" style="width:'+p+'%"></i></div>'
+ +s.t.map(function(t,j){return '<div class="task'+(t[1]?' d':'')+'"><input type="checkbox" id="c'+i+'_'+j+'" data-tp="'+i+','+j+'"'+(t[1]?' checked':'')+'><label for="c'+i+'_'+j+'">'+esc(t[0])+'</label><button class="x" aria-label="মুছো" data-dt="'+i+','+j+'">×</button></div>'}).join('')
+ +'<div class="add"><input data-in="c'+i+'" placeholder="নতুন টপিক"><button data-ad="c'+i+'">যোগ</button></div></section>'}).join('')
+ +'<section class="card"><div class="add" style="margin:0"><input data-in="ns" placeholder="নতুন সাবজেক্ট"><button data-ad="ns">যোগ</button></div></section>'},
+plan:function(){var y=(S.tasks[K(-1)]||[]).filter(function(t){return !t[1]}).length;
+ return '<section class="card"><div class="tabs">'+['আজ','কাল'].map(function(n,i){return '<button class="chip'+(S.pd===i?' on':'')+'" data-pd="'+i+'">'+n+'</button>'}).join('')+'</div><h2 style="padding-top:12px"><span class="cap" id="tc">'+tcount(S.pd)+'</span></h2>'+tasksH(S.pd)
+ +(S.pd===0&&y?'<button class="bt" data-a="carry">গতকালের বাকি '+y+'টি টাস্ক আনো</button>':'')+'</section>'},
+stats:function(){var mx=1800,b=[],i;for(i=13;i>=0;i--){var v=S.log[K(-i)]||0;mx=Math.max(mx,v);b.push([i,v])}
+ var w=0,best=0;for(i=0;i<7;i++)w+=S.log[K(-i)]||0;Object.keys(S.log).forEach(function(k){best=Math.max(best,S.log[k])});
+ var sm=Math.max.apply(null,S.subs.map(function(s){return S.sl[s.n]||0}).concat([1]));
+ return '<section class="card two"><div><p class="cap">মোট পড়া</p><p class="big">'+hh(total())+'<small>ঘণ্টা</small></p></div><div><p class="cap">দিনে গড় (৭ দিন)</p><p class="big">'+hh(w/7)+'<small>ঘণ্টা</small></p></div><div><p class="cap">সেরা দিন</p><p class="big">'+hh(best)+'<small>ঘণ্টা</small></p></div><div><p class="cap">টানা</p><p class="big">'+streak()+'<small>দিন</small></p></div></section>'
+ +'<section class="card"><h2>শেষ ১৪ দিন</h2><div class="bars">'+b.map(function(x){var d=new Date();d.setDate(d.getDate()-x[0]);return '<div><i style="height:'+Math.round(x[1]/mx*100)+'px" title="'+hh(x[1])+' ঘণ্টা"></i>'+d.getDate()+'</div>'}).join('')+'</div></section>'
+ +'<section class="card"><h2>সাবজেক্ট অনুযায়ী</h2>'+S.subs.map(function(s){var v=S.sl[s.n]||0;return '<div class="sh" style="font-size:14px">'+esc(s.n)+'<span>'+hh(v)+' ঘণ্টা</span></div><div class="pb"><i style="width:'+Math.round(v/sm*100)+'%"></i></div>'}).join('')+'</section>'},
+more:function(){return '<section class="card"><h2>থিম</h2><button class="bt" style="margin:0" data-a="theme">'+(S.theme==='dark'?'লাইট মোড চালু করো':'ডার্ক মোড চালু করো')+'</button></section>'
+ +'<section class="card"><h2>ব্যাকআপ</h2><p class="empty">ডেটা এই ব্রাউজারেই থাকে। ব্যাকআপ কপি করে কোথাও রেখো, দরকারে নিচে পেস্ট করে ইমপোর্ট করো।</p><textarea id="imp" aria-label="ব্যাকআপ ডেটা"></textarea><div class="two"><button class="bt" data-a="copy">ব্যাকআপ কপি</button><button class="bt" data-a="imp">ইমপোর্ট করো</button></div></section>'
+ +'<section class="card"><h2>রিসেট</h2><button class="bt r" style="margin:0" data-a="reset">সব ডেটা মুছে ফেলো</button></section>'}};
+var PGS={bro:['bro','run','goal','tasks','wall','week','eod','log'],courses:['courses'],plan:['plan'],stats:['stats'],more:['more']};
+function R(){for(var i=0;i<arguments.length;i++){var e=$('s-'+arguments[i]);if(e&&B[arguments[i]])e.innerHTML=B[arguments[i]]();}sync();tick()}
+function greet(){var h=new Date().getHours();return (h<5?'শুভ রাত্রি':h<12?'শুভ সকাল':h<16?'শুভ দুপুর':h<19?'শুভ বিকেল':'শুভ রাত্রি')+', ইস্তিয়াক ভাই'}
+var TT={bro:['',''],courses:['সিলেবাস ট্র্যাক','কোর্স'],plan:['আজ ও কালকের কাজ','প্ল্যান'],stats:['তোমার অগ্রগতি','স্ট্যাটস'],more:['সেটিংস ও ব্যাকআপ','আরও']};
+function view(anim){var a=$('app');$('sub').textContent=page==='bro'?greet():TT[page][0];$('ttl').textContent=page==='bro'?'ইস্তিয়াক ব্রো':TT[page][1];
+ a.innerHTML=PGS[page].map(function(id){return '<div id="s-'+id+'">'+B[id]()+'</div>'}).join('');
+ if(anim){a.classList.remove('fade');void a.offsetWidth;a.classList.add('fade')}
+ UI.last='';sync();tick()}
+function sync(){['bgo','rgo'].forEach(function(id){var b=$(id);if(!b)return;b.textContent=S.run?'থামাও ও সেভ করো':'পড়া শুরু করো';b.classList.toggle('stop',!!S.run)})}
+
+/* eyes */
+function mood(){var t=today();return S.run?'focus':t<60?'sad':t<3600?'calm':t<S.goal?'happy':'proud'}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function eyes(){var m=mood(),e=$('eyes');if(!e||m===UI.last)return;UI.last=m;var M=MD[m],s=e.children;e.style.color=M.c;
+ [M.l,M.q].forEach(function(cp,i){var st=s[i].style;st.width=M.w+'px';st.height=M.h+'px';st.borderRadius=M.r;st.clipPath=cp});
+ setT('tag',M.t);if(Date.now()>UI.pu)setT('msg',pick(M.m))}
+function poke(){var e=$('eyes');if(!e)return;e.classList.add('pk');setTimeout(function(){e.classList.remove('pk')},160);UI.pu=Date.now()+2800;setT('msg',pick(POKE));buzz(10);setTimeout(function(){if(Date.now()>=UI.pu){UI.last='';eyes()}},2900)}
+setInterval(function(){var e=$('eyes');if(!e)return;e.classList.add('bk');setTimeout(function(){e.classList.remove('bk')},140)},3600);
+
+/* timer */
+function addSes(t,sec,n){var rem=sec,s=t;while(rem>0){var e=new Date(s);e.setHours(24,0,0,0);var c=Math.min(rem,Math.max(1,Math.round((e-s)/1000))),k=KD(new Date(s));S.log[k]=(S.log[k]||0)+c;s+=c*1000;rem-=c}S.sl[n]=(S.sl[n]||0)+sec}
+function lock(on){try{if(on&&navigator.wakeLock&&!UI.wl)navigator.wakeLock.request('screen').then(function(w){UI.wl=w;w.addEventListener('release',function(){UI.wl=null})}).catch(function(){});if(!on&&UI.wl){UI.wl.release();UI.wl=null}}catch(e){}}
+function start(){S.run={t:Date.now(),tg:MODES[S.mode][1],s:S.subs[S.cur].n};save();lock(1);buzz(15);R('run');eyes()}
+function stop(auto){if(!S.run)return;var r=S.run,el=Math.min(runSec(),36000);if(auto&&r.tg)el=r.tg;S.run=null;if(el>=5)addSes(r.t,el,r.s);save();lock(0);document.title='ইস্তিয়াকের ব্রো';
+ R('run','goal','week','log','stats');eyes();setT('clk','--:--');var b=$('bgo');
+ if(el>=5){toast((auto?'সেশন শেষ! ':'')+'+'+Math.max(1,Math.round(el/60))+' মিনিট সেভ হয়েছে');burst(b)}}
+function toggle(){S.run?stop(0):start()}
+function tick(){var d=new Date(),l=Math.max(0,86400-(d.getHours()*3600+d.getMinutes()*60+d.getSeconds())),t=today(),hmv=p2(d.getHours())+':'+p2(d.getMinutes());
+ setT('left',Math.floor(l/3600)+':'+p2(Math.floor(l%3600/60)));setT('hrs',hh(t));
+ if(S.run){var el=runSec(),tg=S.run.tg;if(tg&&el>=tg){stop(1);beep();return}var tx=tg?fmt(tg-el):fmt(el);setT('clk',tx);setT('sub2',S.run.s+' · '+(tg?'কাউন্টডাউন':'স্টপওয়াচ'));document.title=tx+' · ফোকাস'}
+ else{setT('clk',hmv);setT('sub2',d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'}))}
+ var a=hm(t);setH('big',a[0]+'<small>h</small>'+a[1]+'<small>m</small>');setH('lg',hh(t)+'<small>ঘণ্টা</small>');
+ var r=$('ring');if(r)r.style.strokeDashoffset=Math.round(264*(1-Math.min(1,t/S.goal)));
+ if(t>=S.goal&&S.gd!==K()){S.gd=K();save();toast('আজকের লক্ষ্য পূরণ! দারুণ করেছ ⚡');burst($('ring')||$('hrs'));buzz([60,40,60])}
+ if(page==='bro')eyes()}
+setInterval(tick,500);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){tick();if(S.run)lock(1)}});
+
+/* actions */
+function add(k){var inp=document.querySelector('[data-in="'+k+'"]');if(!inp)return;var v=inp.value.trim();if(!v){inp.focus();return}
+ if(k==='w'){S.wall.push(v);R('wall')}else if(k==='ns'){S.subs.push({n:v,t:[]});R('courses')}else if(k[0]==='c'){S.subs[+k.slice(1)].t.push([v,0]);R('courses')}
+ else{var d=K(+k.slice(1));(S.tasks[d]=S.tasks[d]||[]).push([v,0]);R('tasks','plan')}
+ save();var n=document.querySelector('[data-in="'+k+'"]');if(n)n.focus()}
+function prog(i){var s=S.subs[i],dn=s.t.filter(function(t){return t[1]}).length,p=s.t.length?Math.round(dn/s.t.length*100):0,b=$('pb'+i);if(b)b.style.width=p+'%';setT('pt'+i,dn+'/'+s.t.length+' · '+p+'%')}
+document.addEventListener('click',function(e){var t=e.target,b=t.closest('button');
+ if(!b){if(t.closest('#broc'))poke();return}
+ var d=b.dataset;
+ if(d.p){location.hash=d.p;if(d.p===page){window.scrollTo({top:0,behavior:'smooth'})}else window.scrollTo(0,0);return}
+ if(d.a==='run')toggle();
+ else if(d.a==='fs'){var c=$('broc');if(document.fullscreenElement)document.exitFullscreen();else if(c.requestFullscreen)c.requestFullscreen().catch(function(){toast('এখানে ফুল স্ক্রিন চালু হচ্ছে না')});else toast('এই ব্রাউজারে ফুল স্ক্রিন নেই')}
+ else if(d.a==='edit'){S.edit=S.edit?0:1;R('wall')}
+ else if(d.a==='theme'){S.theme=S.theme==='dark'?'light':'dark';save();setTheme();R('more')}
+ else if(d.a==='g-'||d.a==='g+'){S.goal=Math.min(57600,Math.max(1800,S.goal+(d.a==='g+'?1800:-1800)));save();UI.last='';R('goal');eyes()}
+ else if(d.a==='carry'){var y=(S.tasks[K(-1)]||[]).filter(function(x){return !x[1]}),L=S.tasks[K()]=S.tasks[K()]||[];y.forEach(function(x){L.push([x[0],0])});S.tasks[K(-1)]=(S.tasks[K(-1)]||[]).filter(function(x){return x[1]});save();R('plan','tasks');toast(y.length+'টি টাস্ক আজকে আনা হলো')}
+ else if(d.a==='copy'){var j=JSON.stringify(S),ta=$('imp');ta.value=j;ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(x){}toast(ok?'ব্যাকআপ কপি হয়েছে':'ঘরের লেখা সিলেক্ট হয়েছে, কপি করে নাও')}
+ else if(d.a==='imp'){try{var n=JSON.parse($('imp').value);if(!n||!n.subs||!n.log)throw 0;S=n;save();setTheme();toast('ইমপোর্ট হয়েছে');view(1)}catch(x){toast('ডেটা ঠিক নেই, আবার পেস্ট করো')}}
+ else if(d.a==='reset'){if(b.dataset.s){S=def();save();setTheme();view(1);toast('সব নতুন করে শুরু')}else{b.dataset.s=1;b.textContent='আবার ট্যাপ করলে সব মুছে যাবে'}}
+ else if(d.su){S.cur=+d.su;save();R('run')}
+ else if(d.mo){S.mode=+d.mo;save();R('run')}
+ else if(d.pd){S.pd=+d.pd;save();R('plan')}
+ else if(d.ad)add(d.ad)
+ else if(d.dl){var p=pr(d.dl);S.tasks[K(p[0])].splice(p[1],1);save();R('tasks','plan')}
+ else if(d.dw){S.wall.splice(+d.dw,1);save();R('wall')}
+ else if(d.dt){var q=pr(d.dt);S.subs[q[0]].t.splice(q[1],1);save();R('courses')}});
+document.addEventListener('change',function(e){var c=e.target.dataset,on=e.target.checked?1:0,row=e.target.closest('.task');
+ if(c.ck){var p=pr(c.ck);S.tasks[K(p[0])][p[1]][1]=on;setT('tc',tcount(p[0]))}
+ else if(c.tp){var q=pr(c.tp);S.subs[q[0]].t[q[1]][1]=on;prog(q[0])}
+ else if(c.eo!==undefined){var k=K();S.eod[k]=S.eod[k]||[0,0];S.eod[k][+c.eo]=on}else return;
+ if(row)row.classList.toggle('d',!!on);if(on){burst(e.target);buzz(12)}save()});
+document.addEventListener('keydown',function(e){var el=e.target;
+ if(e.key==='Enter'&&el.dataset&&el.dataset.in){add(el.dataset.in);return}
+ if(e.code==='Space'&&page==='bro'&&!/INPUT|TEXTAREA|BUTTON/.test(el.tagName)){e.preventDefault();toggle()}});
+document.addEventListener('pointermove',function(e){var el=$('eyes');if(!el)return;el.style.transform='translate('+((e.clientX/innerWidth-.5)*16)+'px,'+((e.clientY/innerHeight-.5)*12)+'px)'});
+nav();view(1);
+})();
 </script>
 </body>
 </html>
